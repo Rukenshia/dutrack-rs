@@ -1,2 +1,6 @@
 target/
 **/*.rs.bk
+
+assets/
+node_modules/
+.vscode

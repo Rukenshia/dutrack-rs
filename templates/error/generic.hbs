@@ -1,0 +1,19 @@
+{{> partials/header pageCSS="error.css" title=statusCode }}
+<div class="error-wrapper">
+<div class="container">
+    <div class="columns">
+        <div class="column">
+            <h1 class="title is-1">{{ statusCode }}</h1>
+            <h2 class="subtitle is-2">{{ subtitle }}</h2>
+            <p class="subtitle is-5">{{ message }}</p>
+
+            <div class="request-info">
+                <span class="title is-4 inverted">Request Information</span>
+                <p class="fix-top is-5">Status Code: {{ statusCode }}</p>
+                <p class="is-5">Requested Path: {{path}}</p>
+            </div>
+        </div>
+    </div>
+</div>
+</div>
+{{> partials/footer }}

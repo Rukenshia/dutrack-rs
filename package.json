@@ -1,0 +1,18 @@
+{
+  "name": "dutrack-rs",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": {
+    "url": "git@github.com:Rukenshia/dutrack-rs.git",
+    "type": "git"
+  },
+  "scripts": {
+    "build:css": "node-sass -o assets/css src/assets/css",
+    "watch:css": "node-sass -w -o assets/css src/assets/css"
+  },
+  "author": "jan <jan@ruken.pw>",
+  "license": "MIT",
+  "devDependencies": {
+    "node-sass": "^4.5.0"
+  }
+}

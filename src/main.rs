@@ -2,8 +2,10 @@
 #![plugin(rocket_codegen)]
 
 extern crate rocket;
+extern crate rocket_contrib;
+
 mod routes;
-use routes::util;
+use routes::assets;
 
 #[get("/")]
 fn index() -> &'static str {
@@ -11,5 +13,8 @@ fn index() -> &'static str {
 }
 
 fn main() {
-    rocket::ignite().mount("/", routes![index, util::favicon::get]).launch();
+    assets::mount(rocket::ignite())
+        .mount("/", routes![index])
+        .catch(errors![routes::not_found])
+        .launch();
 }

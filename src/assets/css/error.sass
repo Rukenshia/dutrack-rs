@@ -1,0 +1,40 @@
+@import 'variables'
+
+.error-wrapper
+    width: 100%
+    height: 100%
+    position: absolute
+
+    background-color: $danger
+
+    .container
+        top: 30%
+
+        
+        h1.title.is-1
+            font-size: 5rem
+            color: $white
+
+        h2.subtitle.is-2
+            margin-top: -2rem
+            color: $grey-lighter
+
+        p
+            color: $white
+
+        .request-info
+            margin-top: 4rem
+            font-family: 'Courier New', Courier, monospace
+
+            span.title.is-4.inverted
+                width: auto
+                padding: 4px
+                color: $danger
+                background-color: $white
+                text-transform: uppercase
+
+            p
+                color: $white
+                
+                &.fix-top
+                    margin-top: 1rem

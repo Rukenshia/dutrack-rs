@@ -5,16 +5,9 @@ extern crate rocket;
 extern crate rocket_contrib;
 
 mod routes;
-use routes::assets;
-
-#[get("/")]
-fn index() -> &'static str {
-    "Hello"
-}
 
 fn main() {
-    assets::mount(rocket::ignite())
-        .mount("/", routes![index])
+    routes::mount(rocket::ignite())
         .catch(errors![routes::not_found])
         .launch();
 }

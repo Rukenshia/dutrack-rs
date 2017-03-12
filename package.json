@@ -8,11 +8,20 @@
   },
   "scripts": {
     "build:css": "node-sass -o assets/css src/assets/css",
-    "watch:css": "node-sass -w -o assets/css src/assets/css"
+    "build:js": "babel -d assets/js src/assets/js",
+    "watch": "yarn build:css && concurrently 'yarn watch:imgs' 'yarn watch:css' 'yarn watch:js' 'yarn watch:cargo'",
+    "watch:assets": "yarn build:css && concurrently 'yarn watch:imgs' 'yarn watch:css' 'yarn watch:js'",
+    "watch:imgs": "watchexec -w src/assets/img --exts png \"cp -r src/assets/img assets/\"",
+    "watch:css": "node-sass -w -o assets/css src/assets/css",
+    "watch:js": "babel -w -d assets/js src/assets/js",
+    "watch:cargo": "watchexec --exts tera,hbs,rs --restart \"cargo run\""
   },
   "author": "jan <jan@ruken.pw>",
   "license": "MIT",
   "devDependencies": {
+    "babel-cli": "^6.23.0",
+    "babel-preset-es2015": "^6.22.0",
+    "concurrently": "^3.4.0",
     "node-sass": "^4.5.0"
   }
 }

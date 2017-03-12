@@ -1,6 +1,30 @@
-// Override variables here
-// You can add new ones or update existing ones:
-
 @import 'variables'
+
+body
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+
+.columns
+  margin: 0 !important
+
+.content
+  flex: 1 0 auto;
+
+.footer
+  padding: 0 !important
+  height: auto
+  width: 100%
+  
+
+  .blacksmiths
+    padding: .5rem
+
+    img
+      display: block
+      margin: auto
+      height: 2rem
+      user-select: none
+      user-drag: none
 
 @import '../../../vendor/bulma'

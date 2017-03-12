@@ -1,2 +1,19 @@
+{{#if noContent}}
+{{else}}
+<div class="content">
+{{/if}}
+<footer class="footer">
+    <div class="blacksmiths">
+         {{#if inverted}}
+         <img draggable="false" onmousedown="return false" src="/assets/img/blacksmiths_small_inverted.png" />
+         {{else}}
+         <img draggable="false" onmousedown="return false" src="/assets/img/blacksmiths_small.png" />
+         {{/if}}
+    </div>
+</footer>
+{{#if js}}
+<script src="/assets/js/{{js}}"></script>
+{{/if}}
+<script src="/assets/js/navbar.js"></script>
 </body>
 </html>

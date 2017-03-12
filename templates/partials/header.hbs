@@ -3,11 +3,16 @@
 <head>
     <title>{{#if title}}{{ title }} - DUTrack{{else}}DUTrack{{/if}}</title>
 
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400" rel="stylesheet">
     <link rel="stylesheet" href="/assets/css/base.css" />
 
-    {{#if pageCSS}}
-    <link rel="stylesheet" href="/assets/css/{{ pageCSS }}" />
+    {{#if css}}
+    <link rel="stylesheet" href="/assets/css/{{ css }}" />
     {{/if}}
 </head>
 <body>
+{{#if noContent}}
+{{else}}
+<div class="content">
+{{/if}}

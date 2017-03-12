@@ -7,24 +7,21 @@
         Setup
       </h1>
       <h2 class="subtitle">
-        getting you up and running
+        let's get you up and running
       </h2>
     </div>
   </div>
 </section>
 <div class="content">
   <div class="container setup has-text-centered">
-    <div class="columns">
-      <div class="column">
-        <h1 class="title is-1">What phone do you have?</h1>
+    <div class="part-wrapper">
+      <div id="q-phone" class="part">
+        {{> setup/partials/q-phone }}
       </div>
-    </div>
-    <div class="columns phone-os">
-      <div class="column">
-        <a class="button is-large">Android</a>
-        <a class="button is-large">iPhone</a>
+      <div id="guide" class="part hide">
+        {{> setup/partials/guide hidden=true }}
       </div>
     </div>
   </div>
 </div>
-{{> partials/footer noContent=true}}
+{{> partials/footer js="setup.js" noContent=true}}

@@ -20,11 +20,14 @@ document.addEventListener('DOMContentLoaded', () => {
   const appInfo = document.getElementById('app-info');
   const card = document.getElementById('app-card');
   const doneInstalling = document.getElementById('done-installing');
-
   
   doneInstalling.addEventListener('click', () => {
     const renderedHeight = appInfo.clientHeight * 2;
     card.style.maxHeight = `${renderedHeight}px`;
     card.parentNode.querySelector('.card-footer').style.maxHeight = '0px';
+
+    setTimeout(() => {
+      document.getElementById('fence-setup-card').classList.toggle('hide', false);
+    }, 100);
   });
 });

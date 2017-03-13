@@ -8,8 +8,8 @@
   padding-top: 5rem
 
   .app-card
-    max-height: 500px
-    transition: max-height .15s ease-out
+    max-height: 100px
+    transition: max-height .2s ease-out
     overflow: hidden
 
     .content
@@ -25,6 +25,7 @@
     position: absolute
     left: 50%
     transform: translateX(-50%);
+    display: block
 
     opacity: 1
     visibility: visible
@@ -32,9 +33,22 @@
     transition: visibility 0s, opacity .2s
 
     &.hide
+      display: none
       opacity: 0
       visibility: hidden
       transition: visibility 0s linear .2s, opacity .2s
+
+  .fence-setup
+    transition: visibility 0s, opacity .3s
+    opacity: 1
+    visibility: visible
+    display: block
+
+    &.hide
+      display: none
+      opacity: 0
+      visibility: hidden
+      transition: visibility 0s linear .3s, opacity .3s
 
 
 .phone-os

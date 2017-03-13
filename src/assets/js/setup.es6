@@ -2,13 +2,17 @@ document.addEventListener('DOMContentLoaded', () => {
   const android = document.getElementById('android');
   const iphone = document.getElementById('iphone');
 
-  const guide = document.getElementById('guide');
+  const guide_android = document.getElementById('guide-android');
+  const guide_iphone = document.getElementById('guide-iphone');
   const qphone = document.getElementById('q-phone');
 
-  [android, iphone].forEach(e => {
-    e.addEventListener('click', () => {
-      qphone.classList.toggle('hide', true);
-      guide.classList.toggle('hide', false);
-    })
+  android.addEventListener('click', () => {
+    qphone.classList.toggle('hide', true);
+    guide_android.classList.toggle('hide', false);
+  });
+
+  iphone.addEventListener('click', () => {
+    qphone.classList.toggle('hide', true);
+    guide_iphone.classList.toggle('hide', false);
   });
 });

@@ -4,6 +4,7 @@
 extern crate rocket;
 extern crate rocket_contrib;
 
+mod lib;
 mod routes;
 
 fn main() {

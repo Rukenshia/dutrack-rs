@@ -6,6 +6,7 @@ authors = ["Jan Christophersen <jan@ruken.pw>"]
 [dependencies]
 rocket = "0.2.2"
 rocket_codegen = "0.2.2"
+uuid = "0.4"
 
 [dependencies.rocket_contrib]
 version = "*"

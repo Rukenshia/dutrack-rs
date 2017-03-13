@@ -21,14 +21,9 @@
     overflow: hidden
   
   .part
-    width: 100%
-    position: absolute
-    left: 50%
-    transform: translateX(-50%);
-    display: block
-
     opacity: 1
     visibility: visible
+    display: inherit
 
     transition: visibility 0s, opacity .2s
 
@@ -42,7 +37,7 @@
     transition: visibility 0s, opacity .3s
     opacity: 1
     visibility: visible
-    display: block
+    display: inherit
 
     &.hide
       display: none

@@ -1,5 +1,4 @@
 machine:
-  platform: linux
   pre:
     - curl https://sh.rustup.rs -sSf > ./rustup-install.sh && chmod +x rustup-install.sh
     - ./rustup-install.sh -y

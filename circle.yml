@@ -1,7 +1,12 @@
 machine:
-  services:
-    - docker
+  platform: linux
+  pre:
+    - curl https://sh.rustup.rs -sSf > ./rustup-install.sh && chmod +x rustup-install.sh
+    - ./rustup-install.sh -y
+    - rustup install nightly
+    - rustup default nightly
+
 
 test:
   override:
-    - docker run --rm -it -v $(pwd):/source octplane/rust cargo test
+    - cargo test

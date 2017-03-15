@@ -2,8 +2,8 @@
 <div class="columns">
   <div class="column is-8-tablet is-offset-2-tablet is-6-desktop is-offset-3-desktop">
     <div class="card has-text-left" id="app-card-outer">
-      <div class="card-content app-card" id="app-card">
-        <div class="media">
+      <div class="card-content app-card">
+        <div class="media" id="app-card">
           <div class="media-left">
             <figure class="image" style="height: 40px; width: 40px;">
               <img src="http://bulma.io/images/placeholders/96x96.png" alt="Image">
@@ -31,6 +31,10 @@
       <div class="card-content">
         <div class="content">
           <p>You'll now have to set up your geo fence. Please use the tutorial inside the app.</p>
+          <ul>
+            <li>When entering the area, use the following HTTP url: <code>{{ enter_uri }}</code></li>
+            <li>Set the exit HTTP url to <code>{{ exit_uri }}</code>.</li>
+          </ul>
         </div>
       </div>
       <footer class="card-footer">

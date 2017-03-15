@@ -17,13 +17,13 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
   // get app-info height
-  const appInfo = document.getElementById('app-info');
-  const card = document.getElementById('app-card');
+  const appInfo = document.getElementById('app-card');
+  const card = document.getElementById('app-card-outer');
   const doneInstalling = document.getElementById('done-installing');
   
   doneInstalling.addEventListener('click', () => {
-    const renderedHeight = appInfo.clientHeight * 2;
-    card.style.maxHeight = `${renderedHeight}px`;
+    var renderedHeight = appInfo.clientHeight;
+    card.style.maxHeight = `6rem`;
     card.parentNode.querySelector('.card-footer').style.maxHeight = '0px';
 
     setTimeout(() => {

@@ -5,8 +5,3 @@ machine:
     - find . | grep rustup
     - ~/.cargo/bin/rustup install nightly
     - ~/.cargo/bin/rustup default nightly
-
-
-test:
-  override:
-    - cargo test

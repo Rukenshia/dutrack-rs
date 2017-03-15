@@ -2,8 +2,8 @@ machine:
   pre:
     - curl https://sh.rustup.rs -sSf > ./rustup-install.sh && chmod +x rustup-install.sh
     - ./rustup-install.sh -y
-    - rustup install nightly
-    - rustup default nightly
+    - ~/.cargo/bin/rustup install nightly
+    - ~/.cargo/bin/rustup default nightly
 
 
 test:

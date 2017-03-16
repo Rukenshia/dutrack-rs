@@ -28,6 +28,12 @@ impl SessionManager {
     rds.exists::<&Session, ()>(session).is_ok()
   }
 
+  pub fn get_user(&self, session: &Session) -> Result<String, RedisError> {
+    let rds = self.rds.lock().unwrap();
+    
+    rds.get::<&Session, String>(&session)
+  }
+
   pub fn start(&mut self, user: &str) -> Result<Session, RedisError> {
     let rds = self.rds.lock().unwrap();
 

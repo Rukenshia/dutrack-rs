@@ -2,15 +2,15 @@ use std::collections::HashMap;
 
 use rocket::Rocket;
 use rocket::request::Request;
+use rocket::response::Redirect;
 use rocket_contrib::Template;
 
 mod assets;
 mod setup;
 
 #[get("/")]
-fn index() -> Template {
-    let empty: HashMap<String, String> = HashMap::new();
-    Template::render("index", &empty)
+fn index() -> Redirect {
+    Redirect::to("/setup")
 }
 
 #[error(404)]

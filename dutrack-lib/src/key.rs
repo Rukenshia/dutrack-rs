@@ -1,5 +1,5 @@
 use std::fmt;
-use lib::uuid::Uuid;
+use uuid::Uuid;
 
 #[derive(Debug, Clone)]
 pub struct Key {
@@ -13,6 +13,10 @@ impl Key {
     Key {
       uuid: key
     }
+  }
+
+  pub fn to_string(&self) -> String {
+    self.uuid.to_string()
   }
 }
 

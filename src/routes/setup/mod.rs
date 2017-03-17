@@ -2,7 +2,7 @@ use std::collections::HashMap;
 
 use rocket::Rocket;
 use rocket_contrib::Template;
-use lib::key::Key;
+use dutrack_lib::key::Key;
 
 #[get("/")]
 fn setup() -> Template {

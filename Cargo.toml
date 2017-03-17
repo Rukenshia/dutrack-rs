@@ -8,6 +8,9 @@ rocket = "0.2.2"
 rocket_codegen = "0.2.2"
 redis = "0.5.3"
 
+[dependencies.dutrack-lib]
+path = "dutrack-lib"
+
 [dependencies.uuid]
 version = "0.4"
 default-features = false

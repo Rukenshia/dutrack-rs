@@ -1,6 +1,7 @@
 use super::redis;
 use super::redis::{Commands, RedisError};
 use super::uuid::Uuid;
+use super::slog;
 
 use std::sync::Mutex;
 
@@ -10,14 +11,16 @@ pub type Session = String;
 #[allow(dead_code)]
 pub struct SessionManager {
   rds: Mutex<redis::Connection>,
+  log: slog::Logger,
 }
 
 #[allow(dead_code)]
 impl SessionManager {
-  pub fn new(connection: &'static str) -> Self {
+  pub fn new(log: slog::Logger, connection: &'static str) -> Self {
     let client = redis::Client::open(connection).unwrap();
 
     SessionManager {
+      log: log,
       rds: Mutex::new(client.get_connection().unwrap()),
     }
   }
@@ -34,10 +37,12 @@ impl SessionManager {
     rds.get::<&Session, String>(&session)
   }
 
-  pub fn start(&mut self, user: &str) -> Result<Session, RedisError> {
+  pub fn start(&self, user: &str) -> Result<Session, RedisError> {
     let rds = self.rds.lock().unwrap();
 
     let session_key = Uuid::new_v4().to_string();
+
+    debug!(self.log, "starting session {} for {}", session_key, user);
 
     if let Err(e) = rds.set::<&str, &str, ()>(&session_key, user) {
       return Err(e)

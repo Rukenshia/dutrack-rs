@@ -6,7 +6,7 @@ use super::util;
 
 #[allow(dead_code)]
 pub struct User {
-  id: String,
+  pub id: String,
 }
 
 #[allow(dead_code)]

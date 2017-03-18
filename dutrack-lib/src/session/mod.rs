@@ -1,7 +1,8 @@
-use super::redis;
-use super::redis::{Commands, RedisError};
-use super::uuid::Uuid;
-use super::slog;
+use redis;
+use redis::{Commands, RedisError};
+use uuid::Uuid;
+use slog;
+use log;
 
 use std::sync::Mutex;
 
@@ -16,11 +17,11 @@ pub struct SessionManager {
 
 #[allow(dead_code)]
 impl SessionManager {
-  pub fn new(log: slog::Logger, connection: &'static str) -> Self {
+  pub fn new(connection: &str) -> Self {
     let client = redis::Client::open(connection).unwrap();
 
     SessionManager {
-      log: log,
+      log: log::new(o!()),
       rds: Mutex::new(client.get_connection().unwrap()),
     }
   }
@@ -28,13 +29,26 @@ impl SessionManager {
   pub fn exists(&self, session: &Session) -> bool {
     let rds = self.rds.lock().unwrap();
 
-    rds.exists::<&Session, ()>(session).is_ok()
+    let res = rds.exists::<&Session, ()>(session).is_ok();
+
+    if !res {
+      debug!(self.log, "found invalid session {}", session);
+    }
+
+    res
   }
 
-  pub fn get_user(&self, session: &Session) -> Result<String, RedisError> {
+  pub fn get_user(&self, session: &Session) -> Result<Uuid, String> {
     let rds = self.rds.lock().unwrap();
     
-    rds.get::<&Session, String>(&session)
+    debug!(self.log, "get user for session {}", session);
+
+    let uuid_str = match rds.get::<&Session, String>(&session) {
+      Ok(s) => s,
+      Err(e) => return Err(format!("redis: {}", e))
+    };
+
+    Uuid::parse_str(&uuid_str).map_err(|e| format!("uuid: {}", e))
   }
 
   pub fn start(&self, user: &str) -> Result<Session, RedisError> {

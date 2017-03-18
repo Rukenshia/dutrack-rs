@@ -1,0 +1,83 @@
+resources:
+- name: source-code
+  type: git
+  source:
+    uri: https://github.com/Rukenshia/dutrack-rs.git
+    branch: master
+    git_config:
+    - name: core.bigFileThreshold
+      value: 10m
+    disable_ci_skip: true
+
+jobs:
+- name: node-dependencies
+  plan:
+  - get: source-code
+  - task: npm_install
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: node
+      inputs:
+        - name: source-code
+      outputs:
+        - name: node_modules
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd source-code
+          npm i
+          cp -r node_modules ../node_modules
+- name: css
+  plan:
+  - get: source-code
+  - task: build_css
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: node
+      inputs:
+        - name: source-code
+        - name: node_modules
+      outputs:
+        - name: css
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          cd source-code
+          cp -r ../node_modules/ node_modules
+          npm run build:css
+          cp -r assets/css ../output/css
+- name: rust-build
+  plan:
+  - get: source-code
+  - task: build
+    config:
+      platform: linux
+      image_resource:
+        type: docker-image
+        source:
+          repository: ubuntu
+          tag: "16.04"
+      inputs:
+        - name: source-code
+      run:
+        path: sh
+        args:
+        - -exc
+        - |
+          apt-get update && apt-get install -y curl git bash libcurl4-openssl-dev llvm gcc
+          curl https://sh.rustup.rs -sSf > install_rustup.sh
+          chmod +x install_rustup.sh
+          ./install_rustup.sh -y --default-toolchain=nightly
+          export PATH="$PATH:$HOME/.cargo/bin"
+          cd source-code
+          cargo build

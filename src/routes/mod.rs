@@ -9,12 +9,12 @@ mod assets;
 mod setup;
 mod user;
 
-use dutrack_lib::user::User;
+use dutrack_lib::db::models::User;
 
 #[get("/")]
 fn index_user(user: User) -> Template {
     let mut data: HashMap<String, String> = HashMap::new();
-    data.insert("user_id".into(), user.id);
+    data.insert("user_id".into(), user.id.to_string());
 
     Template::render("index", &data)
 }

@@ -3,7 +3,9 @@ use redis::{Commands, RedisError};
 use uuid::Uuid;
 use slog;
 use log;
+use dotenv::dotenv;
 
+use std::env;
 use std::sync::Mutex;
 
 #[allow(dead_code)]
@@ -15,8 +17,20 @@ pub struct SessionManager {
     log: slog::Logger,
 }
 
+lazy_static! {
+    static ref SESSION_MANAGER: SessionManager = {
+        dotenv().ok();
+
+        let redis_url = env::var("REDIS_URL").expect("REDIS_URL must be set");
+        SessionManager::new(&redis_url)
+    };
+}
+
 #[allow(dead_code)]
 impl SessionManager {
+    pub fn get() -> &'static SessionManager {
+        &SESSION_MANAGER as &SessionManager
+    }
     pub fn new(connection: &str) -> Self {
         let client = redis::Client::open(connection).unwrap();
 
@@ -54,6 +68,7 @@ impl SessionManager {
     pub fn end(&self, session: &Session) -> Result<(), RedisError> {
         let rds = self.rds.lock().unwrap();
 
+        debug!(self.log, "force-ending session {}", session);
         rds.del::<&Session, ()>(&session)
     }
 

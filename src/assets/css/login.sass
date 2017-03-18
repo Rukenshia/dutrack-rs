@@ -22,11 +22,11 @@ input[name='email'],input[name='password']
   color: $white
 
   &.is-danger
-    color: $danger
     border-color: $danger
 
   &:hover:not(.is-danger)
     border-color: darken($white, 5)
+  &:hover
     &::placeholder
       color: darken($white, 5)
     &::-webkit-input-placeholder
@@ -40,6 +40,7 @@ input[name='email'],input[name='password']
 
   &:focus:not(.is-danger)
     border-color: darken($white, 10)
+  &:focus
     &::placeholder
       color: darken($white, 10)
     &::-webkit-input-placeholder
@@ -61,14 +62,3 @@ input[name='email'],input[name='password']
     color: $white
   &:-moz-placeholder
     color: $white
-
-  &::placeholder.is-danger
-    color: $danger !important
-  &::-webkit-input-placeholder.is-danger
-    color: $danger !important
-  &::-moz-placeholder.is-danger
-    color: $danger !important
-  &:-ms-input-placeholder.is-danger
-    color: $danger !important
-  &:-moz-placeholder.is-danger
-    color: $danger !important

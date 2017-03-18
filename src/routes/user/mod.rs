@@ -23,5 +23,12 @@ pub fn index(user: User) -> Template {
 }
 
 pub fn mount(rocket: Rocket) -> Rocket {
-    rocket.mount("/", routes![login, logout, post_login, register, post_register, login_redirect, register_redirect])
+    rocket.mount("/",
+                 routes![login,
+                         logout,
+                         post_login,
+                         register,
+                         post_register,
+                         login_redirect,
+                         register_redirect])
 }

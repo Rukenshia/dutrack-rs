@@ -10,6 +10,7 @@ use std::collections::HashMap;
 use diesel;
 use diesel::prelude::*;
 use dutrack_lib::db::models::{User, NewUser};
+use dutrack_lib::user::RegistrationError;
 
 use uuid::Uuid;
 
@@ -25,51 +26,43 @@ pub fn register_redirect(user: User) -> Redirect {
 }
 
 #[get("/register")]
-pub fn register(sm: State<SessionManager>, flash: Option<FlashMessage>) -> Template {
+pub fn register(sm: State<&'static SessionManager>, flash: Option<FlashMessage>) -> Template {
     let mut data = HashMap::<String, String>::new();
     if let Some(ref m) = flash {
-        data.insert("flash".into(), m.msg().into());
+        data.insert("flash".into(), m.msg().to_owned());
     }
+    println!("{:?}", data);
     Template::render("user/login/register", &data)
 }
 
 #[post("/register", data = "<register_data>")]
 pub fn post_register(register_data: Form<RegisterRequest>,
-                  cookies: &Cookies,
-                  db: State<Database>,
-                  sm: State<SessionManager>)
-                  -> Flash<Redirect> {
-    use dutrack_lib::db::schema::users::dsl::*;
-    use dutrack_lib::db::schema::users;
-
+                     cookies: &Cookies,
+                     db: State<&'static Database>,
+                     sm: State<&'static SessionManager>)
+                     -> Flash<Redirect> {
     let data = register_data.get();
 
-    let con = db.pg.lock().unwrap();
-    match users.filter(email.eq(&data.email))
-              .first::<User>(&*con) {
-        Ok(_) => return Flash::error(Redirect::to("/register"), "This email is already registered."),
-        Err(_) => (),
-    };
-
-    let hashed = match User::hash_password(&data.password) {
-        Ok(p) => p,
-        Err(_) => return Flash::error(Redirect::to("/500"), "crypto_hash")
-    };
-
-
-    let new_user = NewUser {
-      email: &data.email,
-      password: &hashed,
-    };
-
-
-    match diesel::insert(&new_user).into(users::table)
-        .get_result(&*con) {
-          Ok(u) => {
-            let session_token = sm.start(&(&u as &User).id).unwrap();
-            cookies.add(Cookie::new("session_token", session_token));
+    match User::register(&data.email, &data.password) {
+        Ok(u) => {
+            u.login(cookies);
             Flash::success(Redirect::to("/"), "")
-          }
-          Err(_) => Flash::error(Redirect::to("/500"), "db_insert")
         }
+        Err(res) => {
+            match res {
+                RegistrationError::EmailInUse => {
+                    Flash::error(Redirect::to("/register"), "This email address is in use.")
+                }
+                RegistrationError::EmailFormat => {
+                    Flash::error(Redirect::to("/register"),
+                                 "Please enter a valid Email address.")
+                }
+                RegistrationError::PasswordTooShort => {
+                    Flash::error(Redirect::to("/register"),
+                                 "The chosen password is too short.")
+                }
+                RegistrationError::InternalServerError(e) => Flash::error(Redirect::to("/500"), e),
+            }
+        }
+    }
 }

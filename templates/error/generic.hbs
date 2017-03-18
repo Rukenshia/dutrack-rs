@@ -11,6 +11,9 @@
                 <span class="title is-4 inverted">Request Information</span>
                 <p class="fix-top is-5">Status Code: {{ statusCode }}</p>
                 <p class="is-5">Requested Path: {{path}}</p>
+                {{#with int_msg}}
+                <p class="is-5">Internal Message: {{int_msg}}</p>
+                {{/with}}
             </div>
         </div>
     </div>

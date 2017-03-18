@@ -11,9 +11,9 @@
   <div class="hero-body columns">
     <div class="column is-half is-offset-one-quarter is-offset-4-desktop is-4-desktop">
       <div class="container has-text-centered">
-        {{#with has_error}}
+        {{#with flash}}
         <div class="notification is-danger">
-          This email is already in use.
+          {{flash}}
         </div>
         {{/with}}
         <form class="has-white-text" name="login" method="POST">

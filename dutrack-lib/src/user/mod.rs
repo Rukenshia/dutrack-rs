@@ -34,10 +34,12 @@ impl<'a, 'r> FromRequest<'a, 'r> for User {
             _ => return Outcome::Forward(()),
         };
 
-        let session_token = request.cookies()
+        let session_token = match request.cookies()
             .find("session_token")
-            .and_then(|cookie| cookie.value().parse().ok())
-            .unwrap();
+            .and_then(|cookie| cookie.value().parse().ok()) {
+                Some(v) => v,
+                None => return Outcome::Forward(()),
+            };
 
         if !session_manager.exists(&session_token) {
             return Outcome::Forward(());

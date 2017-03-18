@@ -1,7 +1,7 @@
 use dutrack_lib::session::SessionManager;
 use dutrack_lib::db::Database;
-use rocket::response::Redirect;
-use rocket::request::{Form, FromForm};
+use rocket::response::{Flash, Redirect};
+use rocket::request::{Form, FromForm, FlashMessage};
 use rocket::{Rocket, State};
 use rocket::http::{Cookie, Cookies};
 use rocket_contrib::Template;
@@ -22,8 +22,33 @@ pub fn login_redirect(user: User) -> Redirect {
 }
 
 #[get("/login", rank = 2)]
-pub fn login(sm: State<SessionManager>) -> Template {
-    Template::render("user/login/index", &HashMap::<String, String>::new())
+pub fn login(sm: State<SessionManager>, flash: Option<FlashMessage>) -> Template {
+    let mut data = HashMap::<String, String>::new();
+    if let Some(ref m) = flash {
+        data.insert("flash".into(), m.msg().into());
+    }
+    Template::render("user/login/index", &data)
+}
+
+#[get("/logout")]
+pub fn logout(cookies: &Cookies,
+                  user: Option<User>,
+                  db: State<Database>,
+                  sm: State<SessionManager>)
+                  -> Redirect {
+                      println!("{:?}", cookies);
+    if let None = user {
+        return Redirect::to("/");
+    }
+    
+    let session_token = cookies
+        .find("session_token")
+        .and_then(|cookie| Some(cookie.value().to_string()))
+        .unwrap();
+    cookies.remove("session_token");
+    sm.end(&session_token);
+
+    Redirect::to("/")
 }
 
 #[post("/login", data = "<login_data>")]
@@ -31,7 +56,7 @@ pub fn post_login(login_data: Form<LoginRequest>,
                   cookies: &Cookies,
                   db: State<Database>,
                   sm: State<SessionManager>)
-                  -> Result<Redirect, Template> {
+                  -> Flash<Redirect> {
     use dutrack_lib::db::schema::users::dsl::*;
 
     let data = login_data.get();
@@ -40,7 +65,7 @@ pub fn post_login(login_data: Form<LoginRequest>,
         Ok(p) => p,
         Err(_) => {
             let mut tpl_data = HashMap::<String, String>::new();
-            return Ok(Redirect::to("/500"))
+            return Flash::error(Redirect::to("/500"), "crypto_hash")
         }
     };
 
@@ -48,11 +73,8 @@ pub fn post_login(login_data: Form<LoginRequest>,
     let user = match users.filter(email.eq(&data.email))
               .first::<User>(&*con) {
         Ok(u) => u,
-        Err(e) => {
-            let mut tpl_data = HashMap::<String, String>::new();
-            tpl_data.insert("has_error".into(), "y".into());
-            tpl_data.insert("email".into(), data.email.clone());
-            return Err(Template::render("user/login/index", &tpl_data))
+        Err(_) => {
+            return Flash::error(Redirect::to("/login"), "invalid")
         }
     };
 
@@ -60,14 +82,11 @@ pub fn post_login(login_data: Form<LoginRequest>,
         Ok(true) => {
             let session_token = sm.start(&user.id).unwrap();
                 cookies.add(Cookie::new("session_token", session_token));
-                Ok(Redirect::to("/"))
+                Flash::success(Redirect::to("/"), "")
         },
         Ok(false) => {
-            let mut tpl_data = HashMap::<String, String>::new();
-            tpl_data.insert("has_error".into(), "y".into());
-            tpl_data.insert("email".into(), data.email.clone());
-            return Err(Template::render("user/login/index", &tpl_data))
+            return Flash::error(Redirect::to("/login"), "invalid")
         },
-        Err(_) => Ok(Redirect::to("/500"))
+        Err(_) => Flash::error(Redirect::to("/500"), "crypto_verify"),
     }
 }

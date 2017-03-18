@@ -51,6 +51,12 @@ impl SessionManager {
         Uuid::parse_str(&uuid_str).map_err(|e| format!("uuid: {}", e))
     }
 
+    pub fn end(&self, session: &Session) -> Result<(), RedisError> {
+        let rds = self.rds.lock().unwrap();
+
+        rds.del::<&Session, ()>(&session)
+    }
+
     pub fn start(&self, user: &Uuid) -> Result<Session, RedisError> {
         let rds = self.rds.lock().unwrap();
 

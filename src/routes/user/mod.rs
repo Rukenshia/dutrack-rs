@@ -1,10 +1,5 @@
-use dutrack_lib::session::SessionManager;
-use dutrack_lib::db::Database;
 use dutrack_lib::db::models::User;
-use rocket::response::Redirect;
-use rocket::request::FromForm;
-use rocket::{Rocket, State};
-use rocket::http::{Cookie, Cookies};
+use rocket::Rocket;
 use rocket_contrib::Template;
 
 use std::collections::HashMap;
@@ -16,8 +11,9 @@ use self::login::*;
 use self::register::*;
 
 #[get("/")]
+#[allow(unused)]
 pub fn index(user: User) -> Template {
-    let mut data: HashMap<String, String> = HashMap::new();
+    let data: HashMap<String, String> = HashMap::new();
 
     Template::render("index", &data)
 }

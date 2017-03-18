@@ -22,6 +22,11 @@ pub enum RegistrationError {
     InternalServerError(String),
 }
 
+pub enum LoginError {
+    InvalidCredentials,
+    InternalServerError(String),
+}
+
 impl User {
     pub fn hash_password(pw: &str) -> BcryptResult<String> {
         hash(pw, DEFAULT_COST)
@@ -62,13 +67,27 @@ impl User {
         }
     }
 
-    pub fn verify_password(&self, pw: &str) -> BcryptResult<bool> {
-        verify(pw, &self.password)
+    pub fn try_login(login_email: &str, login_password: &str) -> Result<User, LoginError> {
+        let hashed = match User::hash_password(login_password) {
+            Ok(p) => p,
+            Err(_) => return Err(LoginError::InternalServerError("crypto_hash".into())),
+        };
+
+        let con = Database::get().pg.lock().unwrap();
+        let user = match users.filter(email.eq(login_email)).first::<User>(&*con) {
+            Ok(u) => u,
+            Err(_) => return Err(LoginError::InvalidCredentials),
+        };
+
+        match user.verify_password(login_password) {
+            Ok(true) => Ok(user),
+            Ok(false) => return Err(LoginError::InvalidCredentials),
+            Err(_) => Err(LoginError::InternalServerError("crypto_verify".into())),
+        }
     }
 
-    pub fn login(&self, cookies: &Cookies) {
-        let session_token = SessionManager::get().start(&self.id).unwrap();
-        cookies.add(Cookie::new("session_token", session_token));
+    pub fn verify_password(&self, pw: &str) -> BcryptResult<bool> {
+        verify(pw, &self.password)
     }
 
     pub fn logout(&self, cookies: &Cookies) -> Result<(), String> {

@@ -2,15 +2,13 @@ use std::collections::HashMap;
 
 use rocket::Rocket;
 use rocket::request::{Request, FlashMessage};
-use rocket::response::{Flash, Redirect};
+use rocket::response::Redirect;
 use rocket::http::uri::URI;
 use rocket_contrib::Template;
 
 mod assets;
 mod setup;
 mod user;
-
-use dutrack_lib::db::models::User;
 
 #[get("/", rank = 2)]
 fn index() -> Redirect {

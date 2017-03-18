@@ -31,6 +31,7 @@ impl SessionManager {
     pub fn get() -> &'static SessionManager {
         &SESSION_MANAGER as &SessionManager
     }
+
     pub fn new(connection: &str) -> Self {
         let client = redis::Client::open(connection).unwrap();
 

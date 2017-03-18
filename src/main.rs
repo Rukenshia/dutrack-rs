@@ -7,16 +7,15 @@ extern crate dutrack_lib;
 
 extern crate uuid;
 
-#[macro_use]
 extern crate diesel;
-#[macro_use]
 extern crate diesel_codegen;
 
 extern crate dotenv;
 use dotenv::dotenv;
-use std::env;
+
 
 mod routes;
+mod user;
 
 fn main() {
     dotenv().ok();

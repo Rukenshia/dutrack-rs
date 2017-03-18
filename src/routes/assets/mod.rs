@@ -11,7 +11,5 @@ fn asset(file: PathBuf) -> Option<NamedFile> {
 }
 
 pub fn mount(rocket: Rocket) -> Rocket {
-    rocket
-        .mount("/", routes![favicon::get])
-        .mount("/assets", routes![asset])
+    rocket.mount("/", routes![favicon::get]).mount("/assets", routes![asset])
 }

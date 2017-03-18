@@ -1,0 +1,41 @@
+{{> partials/header noContent=true css="login.css" title=statusCode }}
+
+<section class="hero is-primary is-bold is-fullheight">
+  <!-- Hero header: will stick at the top -->
+  <div class="hero-head">
+    {{> partials/navbar }}
+
+  </div>
+
+  <!-- Hero content: will be in the middle -->
+  <div class="hero-body columns">
+    <div class="column is-half is-offset-one-quarter is-offset-4-desktop is-4-desktop">
+      <div class="container has-text-centered">
+        {{#with has_error}}
+        <div class="notification is-danger">
+          This email is already in use.
+        </div>
+        {{/with}}
+        <form class="has-white-text" name="login" method="POST">
+          <div class="field">
+            <p class="control">
+              <input class="input is-medium" name="email" type="email" value="{{email}}" placeholder="Email">
+            </p>
+          </div>
+          <div class="field has-top-offset">
+            <p class="control">
+              <input class="input is-medium" name="password" type="password" placeholder="Password">
+            </p>
+          </div>
+          <div class="columns">
+            <div class="column has-top-offset">
+              <a class="register button is-link is-medium" href="/login">Back to Login</a>
+              <button class="login button is-medium is-default">Register</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</section>
+{{> partials/footer noContent=true}}

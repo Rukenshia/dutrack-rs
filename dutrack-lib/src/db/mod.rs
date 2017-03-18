@@ -12,18 +12,18 @@ pub mod models;
 
 #[allow(dead_code)]
 pub struct Database {
-  pub pg: Mutex<PgConnection>,
-  log: slog::Logger,
+    pub pg: Mutex<PgConnection>,
+    log: slog::Logger,
 }
 
 impl Database {
-  pub fn connect(database_url: &str) -> Self {
-    let pg = PgConnection::establish(&database_url)
-        .expect(&format!("Error connecting to {}", database_url));
+    pub fn connect(database_url: &str) -> Self {
+        let pg = PgConnection::establish(&database_url).expect(&format!("Error connecting to {}",
+                                                                        database_url));
 
-    Database {
-      pg: Mutex::new(pg),
-      log: log::new(o!()),
+        Database {
+            pg: Mutex::new(pg),
+            log: log::new(o!()),
+        }
     }
-  }
 }

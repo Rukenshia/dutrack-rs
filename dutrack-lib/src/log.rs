@@ -10,9 +10,9 @@ lazy_static! {
 }
 
 pub fn get() -> slog::Logger {
-  LOGGER.clone()
+    LOGGER.clone()
 }
 
 pub fn new(o: Option<Box<slog::ser::SyncMultiSerialize + 'static>>) -> slog::Logger {
-  LOGGER.new(o)
+    LOGGER.new(o)
 }

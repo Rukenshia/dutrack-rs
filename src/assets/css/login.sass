@@ -1,0 +1,74 @@
+@import 'variables'
+
+$danger: lighten($danger, 5)
+
+.button.register
+  color: darken($white, 5)
+
+  &:hover
+    background-color: transparent
+    border-color: transparent
+    color: darken($white, 10)
+
+.field.has-top-offset
+  margin-top: 1rem
+
+input[name='email'],input[name='password']
+  background: transparent;
+  border: none;
+  border-bottom: 1px solid $white
+  border-radius: 0
+  box-shadow: none
+  color: $white
+
+  &.is-danger
+    color: $danger
+    border-color: $danger
+
+  &:hover:not(.is-danger)
+    border-color: darken($white, 5)
+    &::placeholder
+      color: darken($white, 5)
+    &::-webkit-input-placeholder
+      color: darken($white, 5)
+    &::-moz-placeholder
+      color: darken($white, 5)
+    &:-ms-input-placeholder
+      color: darken($white, 5)
+    &:-moz-placeholder
+      color: darken($white, 5)
+
+  &:focus:not(.is-danger)
+    border-color: darken($white, 10)
+    &::placeholder
+      color: darken($white, 10)
+    &::-webkit-input-placeholder
+      color: darken($white, 10)
+    &::-moz-placeholder
+      color: darken($white, 10)
+    &:-ms-input-placeholder
+      color: darken($white, 10)
+    &:-moz-placeholder
+      color: darken($white, 10)
+
+  &::placeholder
+    color: $white
+  &::-webkit-input-placeholder
+    color: $white
+  &::-moz-placeholder
+    color: $white
+  &:-ms-input-placeholder
+    color: $white
+  &:-moz-placeholder
+    color: $white
+
+  &::placeholder.is-danger
+    color: $danger !important
+  &::-webkit-input-placeholder.is-danger
+    color: $danger !important
+  &::-moz-placeholder.is-danger
+    color: $danger !important
+  &:-ms-input-placeholder.is-danger
+    color: $danger !important
+  &:-moz-placeholder.is-danger
+    color: $danger !important

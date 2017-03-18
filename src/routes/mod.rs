@@ -11,14 +11,6 @@ mod user;
 
 use dutrack_lib::db::models::User;
 
-#[get("/")]
-fn index_user(user: User) -> Template {
-    let mut data: HashMap<String, String> = HashMap::new();
-    data.insert("user_id".into(), user.id.to_string());
-
-    Template::render("index", &data)
-}
-
 #[get("/", rank = 2)]
 fn index() -> Redirect {
     Redirect::to("/setup")
@@ -31,8 +23,15 @@ pub fn not_found(req: &Request) -> Template {
     Template::render("error/404", &map)
 }
 
+#[error(500)]
+pub fn internal_server_error(req: &Request) -> Template {
+    let mut map = HashMap::new();
+    map.insert("path", req.uri().as_str());
+    Template::render("error/500", &map)
+}
+
 pub fn mount(rocket: Rocket) -> Rocket {
-    let mut r = rocket.mount("/", routes![index, index_user]);
+    let mut r = rocket.mount("/", routes![index, user::index]);
     r = assets::mount(r);
     r = user::mount(r);
     setup::mount(r)

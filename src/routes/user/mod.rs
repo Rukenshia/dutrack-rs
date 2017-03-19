@@ -5,10 +5,10 @@ use rocket_contrib::Template;
 use std::collections::HashMap;
 
 mod login;
-mod register;
+mod registration;
 
 use self::login::*;
-use self::register::*;
+use self::registration::*;
 
 #[get("/")]
 #[allow(unused)]

@@ -1,4 +1,4 @@
-#![feature(plugin, custom_derive, custom_attribute, use_extern_macros)]
+#![feature(plugin, custom_derive, custom_attribute)]
 #![plugin(rocket_codegen)]
 
 extern crate rocket;
@@ -8,14 +8,13 @@ extern crate dutrack_lib;
 extern crate uuid;
 
 extern crate diesel;
-extern crate diesel_codegen;
-
 extern crate dotenv;
 use dotenv::dotenv;
 
 
 mod routes;
 mod user;
+mod form_models;
 
 fn main() {
     dotenv().ok();

@@ -6,14 +6,9 @@ use std::collections::HashMap;
 
 use dutrack_lib::db::models::User;
 use dutrack_lib::user::RegistrationError;
+use form_models::user::RegistrationRequest;
 
 use user::UserController;
-
-#[derive(FromForm)]
-pub struct RegisterRequest {
-    email: String,
-    password: String,
-}
 
 #[get("/register")]
 #[allow(unused)]
@@ -32,7 +27,9 @@ pub fn register(flash: Option<FlashMessage>) -> Template {
 }
 
 #[post("/register", data = "<register_data>")]
-pub fn post_register(register_data: Form<RegisterRequest>, cookies: &Cookies) -> Flash<Redirect> {
+pub fn post_register(register_data: Form<RegistrationRequest>,
+                     cookies: &Cookies)
+                     -> Flash<Redirect> {
     let data = register_data.get();
 
     match User::register(&data.email, &data.password) {

@@ -5,15 +5,10 @@ use rocket_contrib::Template;
 use std::collections::HashMap;
 
 use dutrack_lib::db::models::User;
+use form_models::user::LoginRequest;
 use dutrack_lib::user::LoginError;
 
 use user::UserController;
-
-#[derive(FromForm)]
-pub struct LoginRequest {
-    email: String,
-    password: String,
-}
 
 #[get("/login")]
 #[allow(unused)]

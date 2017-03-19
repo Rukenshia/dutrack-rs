@@ -1,12 +1,10 @@
 use rocket::Outcome;
-use rocket::http::{Cookie, Cookies};
 use rocket::request::{self, FromRequest, Request};
 
 use session::SessionManager;
 use db::Database;
-use util;
 
-use log;
+use log::LOGGER;
 
 use db::models::*;
 use db::schema::users::dsl::*;
@@ -60,7 +58,7 @@ impl User {
             password: &hashed,
         };
 
-
+        debug!(LOGGER, "creating user with email {}", reg_email);
         match diesel::insert(&new_user).into(users::table).get_result::<User>(&*con) {
             Ok(u) => Ok(u),
             Err(_) => Err(RegistrationError::InternalServerError("db_error".into())),
@@ -68,11 +66,6 @@ impl User {
     }
 
     pub fn try_login(login_email: &str, login_password: &str) -> Result<User, LoginError> {
-        let hashed = match User::hash_password(login_password) {
-            Ok(p) => p,
-            Err(_) => return Err(LoginError::InternalServerError("crypto_hash".into())),
-        };
-
         let con = Database::get().pg.lock().unwrap();
         let user = match users.filter(email.eq(login_email)).first::<User>(&*con) {
             Ok(u) => u,
@@ -89,36 +82,14 @@ impl User {
     pub fn verify_password(&self, pw: &str) -> BcryptResult<bool> {
         verify(pw, &self.password)
     }
-
-    pub fn logout(&self, cookies: &Cookies) -> Result<(), String> {
-        let session_token = match cookies.find("session_token").and_then(|cookie| {
-                                                         Some(cookie.value().to_string())
-                                                     }) {
-            Some(t) => t,
-            None => {
-                error!(log::get(),
-                       "trying to log out user with non-existing cookie");
-                return Ok(());
-            }
-        };
-        cookies.remove("session_token");
-
-        SessionManager::get().end(&session_token).map_err(|e| format!("redis: {}", e))
-    }
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for User {
     type Error = ();
 
     fn from_request(request: &'a Request<'r>) -> request::Outcome<User, ()> {
-        let session_manager = match util::get_state::<SessionManager>(request) {
-            Outcome::Success(s) => s,
-            _ => return Outcome::Forward(()),
-        };
-        let db = match util::get_state::<Database>(request) {
-            Outcome::Success(s) => s,
-            _ => return Outcome::Forward(()),
-        };
+        let session_manager = SessionManager::get();
+        let db = Database::get();
 
         let session_token = match request.cookies().find("session_token").and_then(|cookie| {
                                                                    cookie.value().parse().ok()

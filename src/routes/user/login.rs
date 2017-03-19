@@ -31,7 +31,7 @@ pub fn logout(cookies: &Cookies, user: Option<User>) -> Flash<Redirect> {
         return Flash::success(Redirect::to("/"), "");
     }
 
-    if let Err(_) = user.unwrap().logout(cookies) {
+    if let Err(_) = UserController::logout(cookies) {
         return Flash::error(Redirect::to("/500"), "logout_redis_failure");
     };
 

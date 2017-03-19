@@ -10,7 +10,7 @@ use form_models::user::RegistrationRequest;
 
 use user::UserController;
 
-#[get("/register")]
+#[get("/register", rank = 2)]
 #[allow(unused)]
 pub fn register_redirect(user: User) -> Redirect {
     Redirect::to("/")

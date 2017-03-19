@@ -7,7 +7,6 @@ use slog;
 use log;
 
 use std::sync::Mutex;
-use uuid::Uuid;
 
 pub mod schema;
 pub mod models;

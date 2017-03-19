@@ -7,6 +7,8 @@ pub struct User {
     pub id: Uuid,
     pub email: String,
     pub password: String,
+    pub fence_key: Uuid,
+    pub finished_setup: bool,
     pub awesome: bool,
 }
 

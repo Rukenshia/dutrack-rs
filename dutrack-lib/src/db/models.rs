@@ -1,5 +1,7 @@
 use uuid::Uuid;
 use super::schema::users;
+use diesel::pg::data_types::PgTimestamp;
+
 
 #[allow(dead_code)]
 #[derive(Queryable)]
@@ -17,4 +19,13 @@ pub struct User {
 pub struct NewUser<'a> {
     pub email: &'a str,
     pub password: &'a str,
+}
+
+#[allow(dead_code)]
+#[derive(Queryable)]
+pub struct Stamp {
+    pub id: Uuid,
+    pub fence: Uuid,
+    pub event: String,
+    pub time: PgTimestamp,
 }

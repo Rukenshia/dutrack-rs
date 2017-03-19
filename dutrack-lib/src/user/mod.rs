@@ -7,7 +7,6 @@ use db::Database;
 use log::LOGGER;
 
 use db::models::*;
-use db::schema::users::dsl::*;
 use diesel::prelude::*;
 use diesel;
 
@@ -31,6 +30,8 @@ impl User {
     }
 
     pub fn register(reg_email: &str, reg_password: &str) -> Result<User, RegistrationError> {
+        use db::schema::users::dsl::*;
+
         if reg_email.len() < 5 || !reg_email.contains("@") || !reg_email.contains(".") {
             return Err(RegistrationError::EmailFormat);
         }
@@ -66,6 +67,8 @@ impl User {
     }
 
     pub fn try_login(login_email: &str, login_password: &str) -> Result<User, LoginError> {
+        use db::schema::users::dsl::*;
+
         let con = Database::get().pg.lock().unwrap();
         let user = match users.filter(email.eq(login_email)).first::<User>(&*con) {
             Ok(u) => u,
@@ -82,12 +85,24 @@ impl User {
     pub fn verify_password(&self, pw: &str) -> BcryptResult<bool> {
         verify(pw, &self.password)
     }
+
+    pub fn get_stamps(&self) -> Result<Vec<Stamp>, String> {
+        use db::schema::stamps::dsl::*;
+
+        let con = Database::get().pg.lock().unwrap();
+
+        match stamps.filter(fence.eq(self.fence_key)).load::<Stamp>(&*con) {
+            Ok(s) => Ok(s),
+            Err(e) => return Err(format!("db: {}", e)),
+        }
+    }
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for User {
     type Error = ();
 
     fn from_request(request: &'a Request<'r>) -> request::Outcome<User, ()> {
+        use db::schema::users::dsl::*;
         let session_manager = SessionManager::get();
         let db = Database::get();
 

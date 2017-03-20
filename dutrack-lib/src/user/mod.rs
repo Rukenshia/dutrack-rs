@@ -10,6 +10,8 @@ use db::models::*;
 use diesel::prelude::*;
 use diesel;
 
+use uuid::Uuid;
+
 use bcrypt::{DEFAULT_COST, hash, verify, BcryptResult};
 
 pub enum RegistrationError {
@@ -27,6 +29,16 @@ pub enum LoginError {
 impl User {
     pub fn hash_password(pw: &str) -> BcryptResult<String> {
         hash(pw, DEFAULT_COST)
+    }
+
+    pub fn from_fence(fence_id: &Uuid) -> Result<User, String> {
+        use db::schema::users::dsl::*;
+
+        let con = Database::get().pg.lock().unwrap();
+        match users.filter(fence_key.eq(fence_id)).first::<User>(&*con) {
+            Ok(u) => Ok(u),
+            Err(e) => Err(format!("db: {}", e)),
+        }
     }
 
     pub fn register(reg_email: &str, reg_password: &str) -> Result<User, RegistrationError> {

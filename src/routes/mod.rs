@@ -9,6 +9,7 @@ use rocket_contrib::Template;
 mod assets;
 mod setup;
 mod user;
+mod api;
 
 #[get("/", rank = 2)]
 fn index() -> Redirect {
@@ -43,5 +44,6 @@ pub fn mount(rocket: Rocket) -> Rocket {
     let mut r = rocket.mount("/", routes![index, user::index, display_500]);
     r = assets::mount(r);
     r = user::mount(r);
+    r = api::mount(r);
     setup::mount(r)
 }

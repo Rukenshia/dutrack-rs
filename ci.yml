@@ -10,7 +10,7 @@ resources:
     disable_ci_skip: true
 
 jobs:
-- name: node-dependencies
+- name: frontend
   plan:
   - get: source-code
   - task: npm_install
@@ -23,7 +23,7 @@ jobs:
       inputs:
         - name: source-code
       outputs:
-        - name: node_modules
+        - name: node-modules
       run:
         path: sh
         args:
@@ -31,11 +31,8 @@ jobs:
         - |
           cd source-code
           npm i
-          cp -r node_modules ../node_modules
-- name: css
-  plan:
-  - get: source-code
-  - task: build_css
+          cp -r node_modules ../node-modules
+  - task: sass_to_css
     config:
       platform: linux
       image_resource:
@@ -44,18 +41,18 @@ jobs:
           repository: node
       inputs:
         - name: source-code
-        - name: node_modules
+        - name: node-modules
       outputs:
         - name: css
-      run:
+      run: 
         path: sh
-        args:
-        - -exc
-        - |
-          cd source-code
-          cp -r ../node_modules/ node_modules
-          npm run build:css
-          cp -r assets/css ../output/css
+        args: 
+         - -exc
+         - |
+            cd source-code
+            cp -r ../node-modules/ node_modules
+            npm run build:css
+            cp -r assets/css ../css
 - name: rust-build
   plan:
   - get: source-code

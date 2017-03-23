@@ -22,6 +22,7 @@ extern crate bcrypt;
 pub mod util;
 pub mod session;
 pub mod user;
+pub mod stamp;
 pub mod log;
 pub mod db;
 

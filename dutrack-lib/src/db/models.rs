@@ -1,5 +1,7 @@
 use uuid::Uuid;
 use super::schema::users;
+use super::schema::stamps;
+use stamp::FenceEvent;
 use diesel::pg::data_types::PgTimestamp;
 
 
@@ -28,4 +30,11 @@ pub struct Stamp {
     pub fence: Uuid,
     pub event: String,
     pub time: PgTimestamp,
+}
+
+#[derive(Insertable)]
+#[table_name="stamps"]
+pub struct NewStamp<'a> {
+    pub fence: Uuid,
+    pub event: &'a str,
 }

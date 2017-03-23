@@ -2,6 +2,8 @@ use uuid::Uuid;
 use rocket::response::Failure;
 use rocket::http::Status;
 use dutrack_lib::db::models::User;
+use dutrack_lib::db::models::Stamp;
+use dutrack_lib::stamp::FenceEvent;
 
 #[get("/<fence>/enter")]
 pub fn enter(fence: &str) -> Result<(), Failure> {
@@ -15,7 +17,10 @@ pub fn enter(fence: &str) -> Result<(), Failure> {
         Err(_) => return Err(Failure(Status::NotFound)),
     };
 
-    Ok(())
+    match Stamp::create(&id, FenceEvent::Enter) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(Failure(Status::InternalServerError)),
+    }
 }
 
 #[get("/<fence>/exit")]
@@ -30,5 +35,9 @@ pub fn exit(fence: &str) -> Result<(), Failure> {
         Err(_) => return Err(Failure(Status::NotFound)),
     };
 
-    Ok(())
+
+    match Stamp::create(&id, FenceEvent::Exit) {
+        Ok(_) => Ok(()),
+        Err(_) => Err(Failure(Status::InternalServerError)),
+    }
 }

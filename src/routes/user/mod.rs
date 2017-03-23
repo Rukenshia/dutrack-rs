@@ -1,7 +1,8 @@
 use dutrack_lib::db::models::User;
 use rocket::Rocket;
-use rocket::response::Redirect;
+use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
+use dutrack_lib::db::models::Stamp;
 
 use std::collections::HashMap;
 
@@ -11,14 +12,60 @@ mod registration;
 use self::login::*;
 use self::registration::*;
 
+#[derive(Serialize)]
+struct IndexContext {
+    user: FrontendUser,
+    stamps: Vec<FrontendStamp>,
+}
+
+#[derive(Serialize)]
+struct FrontendUser {
+    email: String,
+    fence_id: String,
+}
+
+impl FrontendUser {
+    pub fn from_user(user: &User) -> Self {
+        FrontendUser {
+            email: user.email.clone(),
+            fence_id: format!("{}", user.fence_key),
+        }
+    }
+}
+
+#[derive(Serialize)]
+struct FrontendStamp {
+    event: String,
+    time: i64,
+}
+
+impl FrontendStamp {
+    pub fn from_stamp(stamp: &Stamp) -> Self {
+        FrontendStamp {
+            event: stamp.event.clone(),
+            time: stamp.time.0,
+        }
+    }
+}
+
 #[get("/")]
 #[allow(unused)]
-pub fn index(user: User) -> Result<Template, Redirect> {
+pub fn index(user: User) -> Result<Template, Flash<Redirect>> {
     if !user.finished_setup {
-        return Err(Redirect::to("/setup"));
+        return Err(Flash::error(Redirect::to("/setup"), ""));
     }
-    let data: HashMap<String, String> = HashMap::new();
-    Ok(Template::render("index", &data))
+
+    let stamps: Vec<Stamp> = match user.get_stamps() {
+        Ok(s) => s,
+        Err(_) => return Err(Flash::error(Redirect::to("/500"), "error getting stamps")),
+    };
+
+    let ctx = IndexContext {
+        user: FrontendUser::from_user(&user),
+        stamps: stamps.into_iter().map(|s| FrontendStamp::from_stamp(&s)).collect(),
+    };
+
+    Ok(Template::render("index", &ctx))
 }
 
 pub fn mount(rocket: Rocket) -> Rocket {

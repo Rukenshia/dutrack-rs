@@ -1,6 +1,13 @@
 {{> partials/header title=statusCode }}
 {{> partials/navbar }}
 <div class="container">
-  <h1>Hello, {{user_id}}</h1>
+  <h1>Logged in as {{user.email}}</h1>
+  <h3>Stamps <small>id: <code>{{user.fence_id}}</code></small></h3>
+  {{#each stamps}}
+    <div>
+      <h4>{{event}}</h4>
+      {{{time}}}
+    </div>
+  {{/each}}
 </div>
 {{> partials/footer }}

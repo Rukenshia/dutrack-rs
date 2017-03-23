@@ -10,6 +10,9 @@ redis = "0.5.3"
 dotenv = "0.8.0"
 diesel = { version = "0.12.0", features = ["postgres", "uuid"] }
 diesel_codegen = { version = "0.12.0", features = ["postgres"] }
+serde = "0.9"
+serde_derive = "0.9"
+serde_json = "0.9"
 
 [dependencies.dutrack-lib]
 path = "dutrack-lib"

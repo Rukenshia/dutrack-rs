@@ -1,19 +1,13 @@
-use rocket::Outcome;
-use rocket::request::{self, FromRequest, Request};
-
-use session::SessionManager;
 use db::Database;
+use uuid::Uuid;
 
 use log::LOGGER;
 
 use db::models::*;
 use db::schema::stamps;
+
 use diesel::prelude::*;
 use diesel;
-
-use uuid::Uuid;
-
-use bcrypt::{DEFAULT_COST, hash, verify, BcryptResult};
 
 pub enum FenceEvent {
     Enter,

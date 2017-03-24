@@ -1,5 +1,5 @@
 [package]
-name = "dutrack-lib"
+name = "lib"
 version = "0.1.0"
 authors = ["Jan Christophersen <jan@ruken.pw>"]
 

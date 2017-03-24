@@ -1,10 +1,8 @@
-use dutrack_lib::db::models::User;
+use lib::db::models::User;
 use rocket::Rocket;
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
-use dutrack_lib::db::models::Stamp;
-
-use std::collections::HashMap;
+use lib::db::models::Stamp;
 
 mod login;
 mod registration;

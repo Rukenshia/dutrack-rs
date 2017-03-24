@@ -3,7 +3,7 @@
 
 extern crate rocket;
 extern crate rocket_contrib;
-extern crate dutrack_lib;
+extern crate lib;
 
 #[macro_use]
 extern crate serde_derive;
@@ -25,7 +25,7 @@ fn main() {
 
     routes::mount(rocket::ignite())
         .catch(errors![routes::not_found, routes::internal_server_error])
-        .manage(dutrack_lib::session::SessionManager::get())
-        .manage(dutrack_lib::db::Database::get())
+        .manage(lib::session::SessionManager::get())
+        .manage(lib::db::Database::get())
         .launch();
 }

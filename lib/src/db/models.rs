@@ -1,7 +1,6 @@
 use uuid::Uuid;
 use super::schema::users;
 use super::schema::stamps;
-use stamp::FenceEvent;
 use diesel::pg::data_types::PgTimestamp;
 
 

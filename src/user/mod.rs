@@ -1,6 +1,6 @@
-use dutrack_lib::session::SessionManager;
-use dutrack_lib::db::models::User;
-use dutrack_lib::log::debug;
+use lib::session::SessionManager;
+use lib::db::models::User;
+use lib::log::debug;
 
 use rocket::http::{Cookie, Cookies};
 

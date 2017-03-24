@@ -4,8 +4,8 @@ use rocket::http::Cookies;
 use rocket_contrib::Template;
 use std::collections::HashMap;
 
-use dutrack_lib::db::models::User;
-use dutrack_lib::user::RegistrationError;
+use lib::db::models::User;
+use lib::user::RegistrationError;
 use form_models::user::RegistrationRequest;
 
 use user::UserController;

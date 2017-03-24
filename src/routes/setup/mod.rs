@@ -4,7 +4,7 @@ use rocket::Rocket;
 use rocket::response::Redirect;
 use rocket_contrib::Template;
 
-use dutrack_lib::db::models::User;
+use lib::db::models::User;
 
 #[get("/")]
 fn setup(user: User) -> Template {

@@ -16,7 +16,7 @@ run:
   args: 
     - -exc
     - |
-      cd source
       mv cache/node_modules src
+      cd src
       npm run build:css
       cp -r assets/css ../css

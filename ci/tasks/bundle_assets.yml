@@ -1,0 +1,29 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+inputs:
+  - name: source
+    path: /src
+  - name: js
+    path: /js
+  - name: css
+    path: /css
+  - name: img
+    path: /img
+outputs:
+  - name: assets-bundle
+run: 
+  path: sh
+  args: 
+    - -exc
+    - |
+      mkdir temp
+      cp -r js temp
+      cp -r css temp
+      cp -r img temp
+      cd temp
+      tar -czvf assets.tar.gz *
+      mv assets.tar.gz ../assets-bundle/

@@ -4,3 +4,5 @@ target/
 /assets/
 node_modules/
 .vscode
+
+ci/credentials.yml

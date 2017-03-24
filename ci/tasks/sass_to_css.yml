@@ -4,11 +4,12 @@ image_resource:
   type: docker-image
   source:
     repository: node
+    tag: alpine
 inputs:
-      - name: source
-        path: /src
-      - name: node-modules
-        path: /cache
+  - name: source
+    path: /src
+  - name: node-modules
+    path: /cache
 outputs:
   - name: css
 run: 

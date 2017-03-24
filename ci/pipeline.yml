@@ -20,6 +20,14 @@ resources:
     <<: *repo # the source is the same as the corresponding git resource ...
     paths: # ... except that it's only interested in files listing dependencies
       - package.json
+- name: assets-bundle
+  type: s3
+  source:
+    region_name: eu-central-1
+    bucket: dutrack-builds
+    versioned_file: assets.tar.gz
+    access_key_id: {{aws-key}}
+    secret_access_key: {{aws-secret-key}}
 
 jobs:
 - name: cache
@@ -27,6 +35,7 @@ jobs:
   - get: source
     trigger: true
   - get: node-modules
+
 - name: assets
   plan:
   - get: source
@@ -38,32 +47,17 @@ jobs:
     file: source/ci/tasks/sass_to_css.yml
   - task: es6_to_js
     file: source/ci/tasks/es6_to_js.yml
+  - task: copy_images
+    file: source/ci/tasks/copy_images.yml
+  - task: bundle_assets
+    file: source/ci/tasks/bundle_assets.yml
+  - put: assets-bundle
+    params:
+      file: assets-bundle/assets.tar.gz
+
 - name: rust-build
   plan:
   - get: source
     trigger: true
-    passed: [cache]
-  - get: node-modules
-    passed: [cache]
   - task: build
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: ubuntu
-          tag: "16.04"
-      inputs:
-        - name: source
-      run:
-        path: sh
-        args:
-        - -exc
-        - |
-          apt-get update && apt-get install -y curl git bash libcurl4-openssl-dev llvm gcc
-          curl https://sh.rustup.rs -sSf > install_rustup.sh
-          chmod +x install_rustup.sh
-          ./install_rustup.sh -y --default-toolchain=nightly
-          export PATH="$PATH:$HOME/.cargo/bin"
-          cd source
-          cargo build
+    file: source/ci/tasks/rust_app.yml

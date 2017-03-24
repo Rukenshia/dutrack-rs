@@ -8,16 +8,14 @@ image_resource:
 inputs:
   - name: source
     path: /src
-  - name: node-modules
-    path: /cache
 outputs:
-  - name: js
+  - name: img
 run: 
   path: sh
   args: 
     - -exc
     - |
-      mv cache/node_modules src
       cd src
-      npm run build:js
-      cp -r assets/js ../js
+      mkdir assets
+      yarn build:imgs
+      cp -r assets/img ../img

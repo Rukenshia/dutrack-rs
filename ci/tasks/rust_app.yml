@@ -6,6 +6,8 @@ image_resource:
     repository: ruken/dutrack-build
 inputs:
   - name: source
+outputs:
+  - name: bin
 run:
   path: sh
   args:
@@ -16,3 +18,4 @@ run:
     cd source
     diesel migration run
     cargo build
+    cp target/debug/dutrack-rs ../bin/dutrack-rs

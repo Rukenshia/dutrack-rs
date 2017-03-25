@@ -36,6 +36,14 @@ resources:
     versioned_file: dutrack-rs
     access_key_id: {{aws-key}}
     secret_access_key: {{aws-secret-key}}
+- name: release
+  type: s3
+  source:
+    region_name: eu-central-1
+    bucket: dutrack-builds
+    versioned_file: dutrack-rs.tar.gz
+    access_key_id: {{aws-key}}
+    secret_access_key: {{aws-secret-key}}
 
 jobs:
 - name: cache
@@ -83,33 +91,7 @@ jobs:
   - get: binary
     passed: [rust-build]
   - task: bundle-release
-    config:
-      platform: linux
-      image_resource:
-        type: docker-image
-        source:
-          repository: alpine
-      inputs:
-        - name: source
-          path: /src
-        - name: assets-bundle
-          path: /assets
-        - name: binary
-          path: /bin
-      outputs:
-        - name: bundle
-      run:
-        path: sh
-        args: 
-          - -exc
-          - |
-            mkdir -p temp/assets
-            tar -xzvf assets/assets.tar.gz -C temp/assets/
-            cp bin/dutrack-rs temp/
-            cp -r src/templates temp/templates
-            cd temp
-            tar -czvf dutrack.tar.gz *
-            cp dutrack.tar.gz ../bundle/dutrack.tar.gz
-  - put: binary
+    file: source/ci/tasks/bundle_release.yml
+  - put: release
     params:
       file: bundle/dutrack.tar.gz

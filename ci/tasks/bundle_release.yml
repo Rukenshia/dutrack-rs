@@ -1,0 +1,28 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+inputs:
+  - name: source
+    path: /src
+  - name: assets-bundle
+    path: /assets
+  - name: binary
+    path: /bin
+outputs:
+  - name: bundle
+run:
+  path: sh
+  args: 
+    - -exc
+    - |
+      mkdir -p temp/assets
+      tar -xzvf assets/assets.tar.gz -C temp/assets/
+      cp bin/dutrack-rs temp/
+      cp -r src/templates temp/templates
+      cp src/Rocket.toml temp/Rocket.toml
+      cd temp
+      tar -czvf dutrack.tar.gz *
+      cp dutrack.tar.gz ../bundle/dutrack.tar.gz

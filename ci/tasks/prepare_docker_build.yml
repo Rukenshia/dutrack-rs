@@ -1,0 +1,23 @@
+---
+platform: linux
+image_resource:
+  type: docker-image
+  source:
+    repository: alpine
+inputs:
+  - name: source
+    path: /src
+  - name: release
+    path: /release
+outputs:
+  - name: docker
+run: 
+  path: sh
+  args: 
+    - -exc
+    - |
+      mkdir temp
+      tar -xzvf release/dutrack-rs.tar.gz -C docker
+      cp -r src/docker/. docker
+      cp -r src/migrations docker/migrations
+      cp src/.env docker/.env

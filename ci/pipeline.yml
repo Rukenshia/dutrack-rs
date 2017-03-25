@@ -13,6 +13,7 @@ resources:
     - name: core.bigFileThreshold
       value: 10m
     disable_ci_skip: true
+
 - name: node-modules
   type: npm-cache # as defined above
   source:
@@ -20,6 +21,7 @@ resources:
     <<: *repo # the source is the same as the corresponding git resource ...
     paths: # ... except that it's only interested in files listing dependencies
       - package.json
+
 - name: assets-bundle
   type: s3
   source:
@@ -28,6 +30,7 @@ resources:
     versioned_file: assets.tar.gz
     access_key_id: {{aws-key}}
     secret_access_key: {{aws-secret-key}}
+
 - name: binary
   type: s3
   source:
@@ -36,6 +39,7 @@ resources:
     versioned_file: dutrack-rs
     access_key_id: {{aws-key}}
     secret_access_key: {{aws-secret-key}}
+
 - name: release
   type: s3
   source:
@@ -44,6 +48,13 @@ resources:
     versioned_file: dutrack-rs.tar.gz
     access_key_id: {{aws-key}}
     secret_access_key: {{aws-secret-key}}
+
+- name: docker-img
+  type: docker-image
+  source:
+    repository: ruken/dutrack
+    username: {{docker-user}}
+    password: {{docker-password}}
 
 jobs:
 - name: cache
@@ -95,3 +106,16 @@ jobs:
   - put: release
     params:
       file: bundle/dutrack.tar.gz
+
+- name: docker
+  plan:
+    - get: source
+      passed: [release]
+    - get: release
+      trigger: true
+      passed: [release]
+    - task: prepare
+      file: source/ci/tasks/prepare_docker_build.yml
+    - put: docker-img
+      params:
+        build: docker

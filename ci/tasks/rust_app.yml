@@ -3,8 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: ubuntu
-    tag: "16.04"
+    repository: ruken/dutrack-build
 inputs:
   - name: source
 run:
@@ -12,14 +11,7 @@ run:
   args:
   - -exc
   - |
-    apt-get update && apt-get install -y curl git bash libcurl4-openssl-dev llvm gcc libpq-dev postgresql libsqlite3-dev libmysqlclient-dev
-    service postgresql start
     su postgres -c 'psql -c "CREATE DATABASE dutrack;"; psql -c "CREATE USER dutrack PASSWORD '"'dutrack'"'; GRANT ALL ON DATABASE dutrack TO dutrack;"; psql -c "CREATE EXTENSION pgcrypto;" dutrack'
-    curl https://sh.rustup.rs -sSf > install_rustup.sh
-    chmod +x install_rustup.sh
-    ./install_rustup.sh -y --default-toolchain=nightly-2017-03-04
-    export PATH="$PATH:$HOME/.cargo/bin"
-    cargo install diesel_cli
     cd source
     diesel migration run
     cargo build

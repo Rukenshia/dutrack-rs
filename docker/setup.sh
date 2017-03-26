@@ -8,3 +8,5 @@ set -a
 source .env
 set +a
 diesel migration run
+service postgresql stop
+sleep 5

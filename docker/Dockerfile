@@ -14,4 +14,4 @@ RUN ["/bin/bash", "./setup.sh"]
 
 EXPOSE 8000
 
-ENTRYPOINT service postgresql start && service redis-server start && sleep 10; find /var/log/postgresql -exec cat {} \; && ./dutrack
+ENTRYPOINT service postgresql start && service redis-server start && sleep 10 && ./dutrack

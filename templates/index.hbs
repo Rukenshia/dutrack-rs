@@ -2,6 +2,12 @@
 {{> partials/navbar }}
 <div class="container">
   <h1>Logged in as {{user.email}}</h1>
+  <h3>Today</h3>
+  {{#if workday}}
+    {{workday.date}} - {{#each workday.stamps}}<code>{{ this }}</code>{{/each}}
+  {{else}}
+    <em>You haven't checked in today.</em>
+  {{/if}}
   <h3>Stamps <small>id: <code>{{user.fence_id}}</code></small></h3>
   {{#each stamps}}
     <div>

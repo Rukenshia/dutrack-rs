@@ -1,8 +1,6 @@
 use uuid::Uuid;
-use super::schema::users;
-use super::schema::stamps;
+use super::schema::*;
 use diesel::pg::data_types::PgTimestamp;
-
 
 #[allow(dead_code)]
 #[derive(Queryable)]
@@ -36,4 +34,23 @@ pub struct Stamp {
 pub struct NewStamp<'a> {
     pub fence: Uuid,
     pub event: &'a str,
+}
+
+use chrono::NaiveDate;
+
+#[allow(dead_code)]
+#[derive(Queryable)]
+pub struct Workday {
+    pub id: Uuid,
+    pub fence: Uuid,
+    pub date: NaiveDate,
+    pub stamps: Vec<Uuid>,
+}
+
+#[derive(Insertable)]
+#[table_name="workdays"]
+pub struct NewWorkday {
+    pub fence: Uuid,
+    pub date: NaiveDate,
+    pub stamps: Vec<Uuid>,
 }

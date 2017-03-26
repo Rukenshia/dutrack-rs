@@ -4,6 +4,8 @@ extern crate uuid;
 extern crate redis;
 extern crate rocket;
 
+extern crate chrono;
+
 extern crate serde_derive;
 extern crate serde_json;
 
@@ -28,6 +30,7 @@ pub mod user;
 pub mod stamp;
 pub mod log;
 pub mod db;
+pub mod workday;
 
 #[cfg(test)]
 mod tests {

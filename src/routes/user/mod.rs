@@ -1,8 +1,7 @@
-use lib::db::models::User;
+use lib::db::models::{User, Stamp, Workday};
 use rocket::Rocket;
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
-use lib::db::models::Stamp;
 
 mod login;
 mod registration;
@@ -14,12 +13,21 @@ use self::registration::*;
 struct IndexContext {
     user: FrontendUser,
     stamps: Vec<FrontendStamp>,
+    workday: Option<FrontendWorkday>,
 }
 
 #[derive(Serialize)]
 struct FrontendUser {
     email: String,
     fence_id: String,
+}
+
+#[derive(Serialize)]
+struct FrontendWorkday {
+    id: String,
+    fence: String,
+    date: String,
+    stamps: Vec<String>,
 }
 
 impl FrontendUser {
@@ -61,6 +69,20 @@ pub fn index(user: User) -> Result<Template, Flash<Redirect>> {
     let ctx = IndexContext {
         user: FrontendUser::from_user(&user),
         stamps: stamps.into_iter().map(|s| FrontendStamp::from_stamp(&s)).collect(),
+        workday: match Workday::today(&user.fence_key) {
+            Err(_) => None,
+            Ok(w) => {
+                Some(FrontendWorkday {
+                         id: format!("{}", w.id),
+                         fence: format!("{}", w.fence),
+                         date: w.date.format("%Y-%m-%d").to_string(),
+                         stamps: w.stamps
+                             .into_iter()
+                             .map(|s| format!("{}", s))
+                             .collect(),
+                     })
+            }
+        },
     };
 
     Ok(Template::render("index", &ctx))

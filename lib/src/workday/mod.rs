@@ -47,6 +47,26 @@ impl Workday {
         }
     }
 
+    pub fn by_id(workday_id: &Uuid) -> Result<Self, String> {
+        use db::schema::workdays::dsl::*;
+        let con = Database::get().pg.lock().unwrap();
+
+        match workdays.find(workday_id).first::<Workday>(&*con) {
+            Ok(s) => Ok(s),
+            Err(e) => Err(format!("db: {}", e)),
+        }
+    }
+
+    pub fn by_date(fence_key: &Uuid, wdate: &NaiveDate) -> Result<Self, String> {
+        use db::schema::workdays::dsl::*;
+        let con = Database::get().pg.lock().unwrap();
+
+        match workdays.filter(fence.eq(fence_key)).filter(date.eq(wdate)).first::<Workday>(&*con) {
+            Ok(s) => Ok(s),
+            Err(e) => Err(format!("db: {}", e)),
+        }
+    }
+
     pub fn today(fence_key: &Uuid) -> Result<Self, String> {
         use db::schema::workdays::dsl::*;
         use chrono::prelude::*;
@@ -60,5 +80,20 @@ impl Workday {
             .filter(date.eq(now.naive_utc()))
             .first::<Workday>(&*con)
             .map_err(|e| format!("{}", e))
+    }
+
+    pub fn get_stamps(&self) -> Result<Vec<Stamp>, String> {
+        let mut stamps: Vec<Stamp> = vec![];
+
+        for stamp in &self.stamps {
+            let actual = match Stamp::by_id(stamp) {
+                Ok(s) => s,
+                Err(e) => return Err(e),
+            };
+
+            stamps.push(actual);
+        }
+
+        Ok(stamps)
     }
 }

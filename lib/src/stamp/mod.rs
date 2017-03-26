@@ -9,6 +9,27 @@ use db::schema::stamps;
 use diesel::prelude::*;
 use diesel;
 
+use chrono::NaiveDateTime;
+
+#[derive(Serialize)]
+pub struct PublicStamp {
+    pub id: String,
+    pub fence: String,
+    pub event: String,
+    pub time: NaiveDateTime,
+}
+
+impl PublicStamp {
+    pub fn from_stamp(s: &Stamp) -> Self {
+        PublicStamp {
+            id: format!("{}", s.id),
+            fence: format!("{}", s.fence),
+            event: s.event.clone(),
+            time: s.time,
+        }
+    }
+}
+
 pub enum FenceEvent {
     Enter,
     Exit,

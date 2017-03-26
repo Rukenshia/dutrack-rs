@@ -1,27 +1,27 @@
-{{> partials/header title=statusCode }}
+{{> partials/header css="workday.css" title=statusCode }}
 {{> partials/navbar }}
-<div class="container">
-  <h1>Logged in as {{user.email}}</h1>
-  <h3>Today</h3>
-  {{#if workday}}
-    <h4>{{workday.date}}</h4>
-    <div id="workday_stamps"></div>
-  {{else}}
-    <em>You haven't checked in today.</em>
-  {{/if}}
-  <h3>Stamps <small>id: <code>{{user.fence_id}}</code></small></h3>
-  {{#each stamps}}
-    <div>
-      <h4>{{event}}</h4>
-      {{{time}}}
+<div class="container" id="main">
+  <div class="columns">
+    <div class="column">
+      <h1>Logged in as {{user.email}}</h1>
     </div>
-  {{/each}}
+  </div>
+  <div class="columns">
+    <div class="column">
+      <today :date="today"></today>
+    </div>
+  </div>
+  <div class="columns">
+    <template v-for="day in history">
+      <div class="column">
+        <day-summary :date="day.date" :stamps="day.workday.stamps"></day-summary>
+      </div>
+    </template>
+  </div>
 </div>
 <script type="text/javascript">
-  window.STAMPS = {
-    today: []
+  window.DUTRACK = {
+    fence: '{{user.fence}}'
   };
-
-  {{#each workday.stamps}}window.STAMPS.today.push("{{this}}");{{/each}}
 </script>
-{{> partials/footer js=["ajax.js", "moment.js", "workday.js"] }}
+{{> partials/footer js=["vue.js", "ajax.js", "moment.js", "moment_timezone.js", "components/day_summary.js", "components/today.js", "workday.js"] }}

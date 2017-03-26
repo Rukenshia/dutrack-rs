@@ -21,7 +21,7 @@ pub struct NewUser<'a> {
 }
 
 #[allow(dead_code)]
-#[derive(Queryable)]
+#[derive(Queryable, Clone)]
 pub struct Stamp {
     pub id: Uuid,
     pub fence: Uuid,

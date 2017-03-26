@@ -1,42 +1,29 @@
 (async () => {
-    if (typeof window.STAMPS === 'undefined') {
-        return;
-    }
+  moment.tz.setDefault('UTC');
 
-    async function getStamps() {
-        const arr = [];
+  new Vue({
+    el: '#main',
+    data: {
+      history: [],
+      today: moment().format('YYYY-MM-DD'),
+    },
+    mounted() {
+      const now = moment();
 
-        for (const stamp of window.STAMPS.today) {
-            arr.push(JSON.parse(await http.get(`/api/v1/stamps/${stamp}`)));
-        }
+      for (let i = 1; i < 7; i++) {
+        setTimeout(async () => {
+          const date = now.subtract(1, 'days').format('YYYY-MM-DD');
+          const obj = { date, workday: { stamps: [] } };
 
-        return arr;
-    }
+          this.history.push(obj);
 
-    const sel = document.getElementById('workday_stamps');
-    const stamps = await getStamps();
-
-    let lastStamp = null;
-
-    stamps.forEach(stamp => {
-        const div = document.createElement('div');
-        
-        div.innerHTML = `${stamp.event === 'enter' ? 'started' : 'stopped'} working ${moment(stamp.time).fromNow()}`;
-
-        if (lastStamp) {
-            if (lastStamp.event === stamp.event) {
-                // ignore
-                return;
-            }
-
-            if (lastStamp.event === 'enter' && stamp.event === 'exit') {
-                div.innerHTML += `(worked for ${moment(stamp.time).from(moment(lastStamp.time), true)})`;
-            }
-        }
-
-        div.innerHTML += '<br />';
-
-        lastStamp = stamp;
-        sel.appendChild(div);
-    });
+          http.get(`/api/v1/workdays?date=${date}`)
+            .then(data => {
+              obj.workday = JSON.parse(data);
+            })
+            .catch(() => { });
+        }, 5);
+      }
+    },
+  });
 })();

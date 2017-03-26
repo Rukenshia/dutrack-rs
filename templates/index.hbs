@@ -4,7 +4,8 @@
   <h1>Logged in as {{user.email}}</h1>
   <h3>Today</h3>
   {{#if workday}}
-    {{workday.date}} - {{#each workday.stamps}}<code>{{ this }}</code>{{/each}}
+    <h4>{{workday.date}}</h4>
+    <div id="workday_stamps"></div>
   {{else}}
     <em>You haven't checked in today.</em>
   {{/if}}
@@ -16,4 +17,11 @@
     </div>
   {{/each}}
 </div>
-{{> partials/footer }}
+<script type="text/javascript">
+  window.STAMPS = {
+    today: []
+  };
+
+  {{#each workday.stamps}}window.STAMPS.today.push("{{this}}");{{/each}}
+</script>
+{{> partials/footer js=["ajax.js", "moment.js", "workday.js"] }}

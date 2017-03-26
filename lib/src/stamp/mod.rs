@@ -43,6 +43,16 @@ impl Stamp {
             }
         }
     }
+
+    pub fn by_id(stamp_id: &Uuid) -> Result<Self, String> {
+        use db::schema::stamps::dsl::*;
+        let con = Database::get().pg.lock().unwrap();
+
+        match stamps.find(stamp_id).first::<Stamp>(&*con) {
+            Ok(s) => Ok(s),
+            Err(e) => Err(format!("db: {}", e)),
+        }
+    }
 }
 
 impl PartialEq<String> for FenceEvent {

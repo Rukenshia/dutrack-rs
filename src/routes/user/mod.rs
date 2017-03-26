@@ -2,6 +2,7 @@ use lib::db::models::{User, Stamp, Workday};
 use rocket::Rocket;
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
+use chrono::NaiveDateTime;
 
 mod login;
 mod registration;
@@ -42,14 +43,14 @@ impl FrontendUser {
 #[derive(Serialize)]
 struct FrontendStamp {
     event: String,
-    time: i64,
+    time: NaiveDateTime,
 }
 
 impl FrontendStamp {
     pub fn from_stamp(stamp: &Stamp) -> Self {
         FrontendStamp {
             event: stamp.event.clone(),
-            time: stamp.time.0,
+            time: stamp.time,
         }
     }
 }

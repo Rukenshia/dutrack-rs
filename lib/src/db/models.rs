@@ -1,6 +1,6 @@
 use uuid::Uuid;
 use super::schema::*;
-use diesel::pg::data_types::PgTimestamp;
+use chrono::NaiveDateTime;
 
 #[allow(dead_code)]
 #[derive(Queryable)]
@@ -26,7 +26,7 @@ pub struct Stamp {
     pub id: Uuid,
     pub fence: Uuid,
     pub event: String,
-    pub time: PgTimestamp,
+    pub time: NaiveDateTime,
 }
 
 #[derive(Insertable)]

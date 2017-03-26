@@ -13,7 +13,7 @@ diesel_codegen = { version = "0.12.0", features = ["postgres"] }
 serde = "0.9"
 serde_derive = "0.9"
 serde_json = "0.9"
-chrono = "0.3"
+chrono = { version = "0.3", features = ["serde"] }
 
 [dependencies.lib]
 path = "lib"
@@ -26,4 +26,4 @@ features = ["v4"]
 [dependencies.rocket_contrib]
 version = "*"
 default-features = false
-features = ["handlebars_templates"]
+features = ["handlebars_templates", "json"]

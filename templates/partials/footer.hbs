@@ -13,9 +13,9 @@
     </div>
 </footer>
 </div>
-{{#if js}}
-<script src="/assets/js/{{js}}"></script>
-{{/if}}
+{{#each js}}
+<script src="/assets/js/{{this}}"></script>
+{{/each}}
 <script src="/assets/js/navbar.js"></script>
 </body>
 </html>

@@ -9,6 +9,8 @@ ADD .env ./.env
 ADD migrations ./migrations
 
 RUN chmod +x dutrack
+
+RUN apt-get update && apt-get install -y libpq-dev
 EXPOSE 8000
 
 ENTRYPOINT ./dutrack

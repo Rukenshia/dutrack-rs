@@ -5,6 +5,7 @@ WORKDIR /dutrack
 ADD dutrack-rs ./dutrack
 ADD templates ./templates
 ADD assets ./assets
+ADD Rocket.toml ./Rocket.toml
 ADD .env ./.env
 ADD migrations ./migrations
 

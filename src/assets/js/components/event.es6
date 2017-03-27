@@ -1,5 +1,5 @@
 Vue.component('event', {
-  props: ['type', 'from', 'until'],
+  props: ['type', 'from', 'until', 'now'],
   template: `
     <article class="media">
       <figure class="media-left">
@@ -24,7 +24,7 @@ Vue.component('event', {
   },
   computed: {
     since() {
-      return moment().to(this.from);
+      return this.now.to(this.from);
     },
     eventText() {
       return {

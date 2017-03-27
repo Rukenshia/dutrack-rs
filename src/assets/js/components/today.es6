@@ -14,19 +14,19 @@ Vue.component('today', {
               <p>Manual controls</p>
             </div>
             <div class="message-body">
-              <a class="button is-black" @click="stop" v-if="working">Stop Working</a>
+              <a class="button is-black" @click="stop" v-if="parsed.openEnterEvent || false">Stop Working</a>
               <a class="button is-black" @click="start" v-else>Start Working</a>
             </div>
           </article>
         </div>
         <div class="column is-offset-1 is-9">
-          <day-summary :date="date" :stamps="workday.stamps"></day-summary>
+          <day-summary :now="now" :date="date" :stamps="workday.stamps"></day-summary>
 
           <template v-if="parsed !== null">
           <template v-for="event in parsed.events">
           <div class="columns">
             <div class="column">
-              <event :type="event.type" :from="event.from" :until="event.to"></event>
+              <event :now="now" :type="event.type" :from="event.from" :until="event.to"></event>
             </div>
           </div>
           </template>
@@ -40,17 +40,29 @@ Vue.component('today', {
       workday: {
         stamps: [],
       },
-      working: false,
-      parsed: null,
+      parsed: {
+        connecting: [],
+        events: [],
+        openEnterEvent: false,
+      },
+      intv: null,
+      now: moment(),
     };
   },
   mounted() {
     this.updateWorkday();
+
   },
   watch: {
     workday(wd) {
       this.parsed = window.parseStamps(wd.stamps);
       this.parsed.events.reverse();
+
+      if (this.parsed.openEnterEvent) {  
+        this.intv = setInterval(() => this.updateNow(), 2000);
+      } else {
+        clearInterval(this.intv);
+      }
     }
   },
   computed: {
@@ -77,7 +89,7 @@ Vue.component('today', {
       });
 
       if (enter) {
-        dur.add(moment().diff(enter));
+        dur.add(this.now.diff(enter));
       }
 
       return {
@@ -87,6 +99,9 @@ Vue.component('today', {
     }
   },
   methods: {
+    updateNow() {
+      this.now = moment();
+    },
     async start() {
       try {
         this.workday.stamps.push(JSON.parse(await http.get(`/api/v1/fence/${window.DUTRACK.fence}/enter`)));
@@ -108,10 +123,6 @@ Vue.component('today', {
         this.workday = {
           stamps: [],
         };
-      }
-
-      if (this.workday.stamps[this.workday.stamps.length - 1].event === 'enter') {
-        this.working = true;
       }
     },
   },

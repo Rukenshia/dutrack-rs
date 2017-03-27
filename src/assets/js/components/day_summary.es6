@@ -12,6 +12,9 @@ Vue.component('day-summary', {
   props: {
     date: String,
     stamps: Array,
+    now: {
+      required: false,
+    },
   },
   data() {
     return {
@@ -49,7 +52,7 @@ Vue.component('day-summary', {
         this.notCheckedOut = true;
 
         if (this.daysAgo === 0) {
-          dur.add(moment().diff(enter));
+          dur.add(this.now.diff(enter));
         }
       }
 

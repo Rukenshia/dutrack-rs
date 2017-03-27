@@ -18,4 +18,4 @@ run:
       cd src
       mkdir assets
       yarn build:imgs
-      cp -r assets/img ../img
+      cp -r assets/img/. ../img

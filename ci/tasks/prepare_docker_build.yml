@@ -20,4 +20,4 @@ run:
       tar -xzvf release/dutrack-rs.tar.gz -C docker
       cp -r src/docker/. docker
       cp -r src/migrations docker/migrations
-      echo "DATABASE_URL=postgres://dutrack:dutrack@postgres/dutrack\nREDIS_URL=redis://redis" >> docker/.env
+      printf "DATABASE_URL=postgres://dutrack:dutrack@postgres/dutrack\nREDIS_URL=redis://redis" > docker/.env

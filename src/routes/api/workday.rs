@@ -68,8 +68,7 @@ pub struct Filter<'a> {
     pub date: &'a str,
 }
 
-#[get("/?<filter>", rank = 2)]
-#[allow(unused)]
+#[get("/?<filter>")]
 pub fn get_by_date(filter: Filter, u: User) -> Result<JSON<PublicWorkday>, Failure> {
     let nd = match NaiveDate::parse_from_str(filter.date, "%Y-%m-%d") {
         Ok(n) => n,
@@ -85,6 +84,9 @@ pub fn get_by_date(filter: Filter, u: User) -> Result<JSON<PublicWorkday>, Failu
 
             Ok(JSON(PublicWorkday::from_workday(&w, stamps)))
         }
-        Err(_) => Err(Failure(Status::NotFound)),
+        Err(e) => {
+            println!("{}", e);
+            Err(Failure(Status::NotFound))
+        }
     }
 }

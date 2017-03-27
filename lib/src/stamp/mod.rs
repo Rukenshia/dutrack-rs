@@ -10,6 +10,7 @@ use diesel::prelude::*;
 use diesel;
 
 use chrono::NaiveDateTime;
+use chrono::prelude::UTC;
 
 #[derive(Serialize)]
 pub struct PublicStamp {
@@ -49,13 +50,15 @@ impl Stamp {
         let new_stamp = NewStamp {
             fence: fence.clone(),
             event: ev.as_str().into(),
+            time: UTC::now().naive_utc(),
         };
 
         let con = Database::get().pg.lock().unwrap();
         debug!(LOGGER,
-               "creating fence event {} for fence {}",
+               "creating stamp {} for fence {} AT {}",
                ev.as_str(),
-               fence);
+               fence,
+               UTC::now().naive_utc());
         match diesel::insert(&new_stamp).into(stamps::table).get_result::<Stamp>(&*con) {
             Ok(s) => Ok(s),
             Err(e) => {

@@ -14,50 +14,52 @@ Vue.component('today', {
               <p>Manual controls</p>
             </div>
             <div class="message-body">
-              <a class="button is-black" @click="start">Start Working</a>
-              &nbsp;
-              <a class="button is-white" @click="stop">Stop Working</a>
+              <a class="button is-black" @click="stop" v-if="working">Stop Working</a>
+              <a class="button is-black" @click="start" v-else>Start Working</a>
             </div>
           </article>
         </div>
         <div class="column is-offset-1 is-9">
-          <day-summary v-if="workday" :date="date" :stamps="workday.stamps"></day-summary>
+          <day-summary :date="date" :stamps="workday.stamps"></day-summary>
 
-          <ul v-if="workday" v-for="stamp in connectingStamps">
-            <li>{{ stamp.event }}</li>
-          </ul>
+          <template v-if="parsed !== null">
+          <template v-for="event in parsed.events">
+          <div class="columns">
+            <div class="column">
+              <event :type="event.type" :from="event.from" :until="event.to"></event>
+            </div>
+          </div>
+          </template>
+          </template>
         </div>
       </div>
     </div>
     `,
   data() {
     return {
-      workday: null,
+      workday: {
+        stamps: [],
+      },
       working: false,
+      parsed: null,
     };
   },
   mounted() {
     this.updateWorkday();
   },
+  watch: {
+    workday(wd) {
+      this.parsed = window.parseStamps(wd.stamps);
+      this.parsed.events.reverse();
+    }
+  },
   computed: {
     connectingStamps() {
-      let enter = null;
       if (this.workday === null) {
         return [];
       }
 
-      return this.workday.stamps.filter(stamp => {
-        if (enter && stamp.event === 'exit') {
-          enter = null;
-          return true;
-        }
-
-        if (!enter && stamp.event === 'enter') {
-          enter = stamp;
-          return true;
-        }
-        return false;
-      });
+      return window.parseStamps(this.workday.stamps).connecting;
     },
     timeWorked() {
       let dur = moment.duration(0);
@@ -100,7 +102,13 @@ Vue.component('today', {
       }
     },
     async updateWorkday() {
-      this.workday = JSON.parse(await http.get(`/api/v1/workday/?date=${moment().format('YYYY-MM-DD')}`));
+      try {
+        this.workday = JSON.parse(await http.get(`/api/v1/workdays/?date=${moment().format('YYYY-MM-DD')}`));
+      } catch(e) {
+        this.workday = {
+          stamps: [],
+        };
+      }
 
       if (this.workday.stamps[this.workday.stamps.length - 1].event === 'enter') {
         this.working = true;

@@ -34,6 +34,7 @@ pub struct Stamp {
 pub struct NewStamp<'a> {
     pub fence: Uuid,
     pub event: &'a str,
+    pub time: NaiveDateTime,
 }
 
 use chrono::NaiveDate;

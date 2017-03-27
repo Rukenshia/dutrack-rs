@@ -4,7 +4,9 @@ Vue.component('day-summary', {
       <h3 class="title" v-if="daysAgo === 0">Today</h3>
       <h3 class="title" v-else-if="daysAgo === 1">Yesterday</h3>
       <h3 class="title" v-else>{{ date }}</h3>
-      <p class="subtitle">time worked: {{ timeWorked.hours }}:{{ timeWorked.minutes }}</p>
+      <p class="subtitle" v-if="stamps.length > 0">time worked: {{ timeWorked.hours }}:{{ timeWorked.minutes }}</p>
+      <p class="subtitle" v-else><span class="tag is-normal">no records</span></p>
+      <span v-if="notCheckedOut" class="tag is-danger">not checked out</span>
     </div>
   `,
   props: {
@@ -14,6 +16,7 @@ Vue.component('day-summary', {
   data() {
     return {
       daysAgo: 0,
+      notCheckedOut: false,
     };
   },
   mounted() {
@@ -41,6 +44,14 @@ Vue.component('day-summary', {
           enter = m;
         }
       });
+
+      if (enter) {
+        this.notCheckedOut = true;
+
+        if (this.daysAgo === 0) {
+          dur.add(moment().diff(enter));
+        }
+      }
 
       return {
         hours: `0${dur.hours()}`.slice(-2),

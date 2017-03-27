@@ -17,5 +17,5 @@ run:
     su postgres -c 'psql -c "CREATE DATABASE dutrack;"; psql -c "CREATE USER dutrack PASSWORD '"'dutrack'"'; GRANT ALL ON DATABASE dutrack TO dutrack;"; psql -c "CREATE EXTENSION pgcrypto;" dutrack'
     cd source
     diesel migration run
-    cargo build
-    cp target/debug/dutrack-rs ../bin/dutrack-rs
+    cargo build --release
+    cp target/release/dutrack-rs ../bin/dutrack-rs

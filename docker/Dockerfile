@@ -1,4 +1,4 @@
-FROM ruken/dutrack-build
+FROM ubuntu:16.04
 MAINTAINER Jan Christophersen <jan@ruken.pw>
 
 WORKDIR /dutrack
@@ -7,11 +7,8 @@ ADD templates ./templates
 ADD assets ./assets
 ADD .env ./.env
 ADD migrations ./migrations
-ADD setup.sh ./setup.sh
 
 RUN chmod +x dutrack
-RUN ["/bin/bash", "./setup.sh"]
-
 EXPOSE 8000
 
-ENTRYPOINT service postgresql start && service redis-server start && sleep 10 && ./dutrack
+ENTRYPOINT ./dutrack

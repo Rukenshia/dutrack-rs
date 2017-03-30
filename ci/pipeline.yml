@@ -81,6 +81,7 @@ jobs:
   - put: assets-bundle
     params:
       file: assets-bundle/assets.tar.gz
+      acl: public-read
 
 - name: rust-build
   plan:

@@ -10,10 +10,11 @@ use lib::db::models::User;
 fn setup(user: User) -> Template {
     let mut data: HashMap<String, String> = HashMap::new();
     data.insert("enter_uri".into(),
-                format!("http://localhost:8000/api/v1/fence/{}/enter",
+                format!("http://time.in.fkn.space/api/v1/fence/{}/enter",
                         user.fence_key));
     data.insert("exit_uri".into(),
-                format!("http://localhost:8000/api/v1/fence/{}/exit", user.fence_key));
+                format!("http://time.in.fkn.space/api/v1/fence/{}/exit",
+                        user.fence_key));
     Template::render("setup/index", &data)
 }
 

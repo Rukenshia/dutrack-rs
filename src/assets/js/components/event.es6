@@ -10,7 +10,7 @@ Vue.component('event', {
       <div class="media-content">
         <div class="content">
           <p>
-            <strong>{{ since }}</strong><small>&nbsp{{from.format('HH:mm')}}<template v-if="from !== until && until.diff(from) > 60000"> until {{until.format('HH:mm')}}</template></small>
+            <strong>{{ since }}</strong><small>&nbsp{{from.tz('Europe/Berlin').format('HH:mm')}}<template v-if="from !== until && until.diff(from) > 60000"> until {{until.tz('Europe/Berlin').format('HH:mm')}}</template></small>
             <br>
             {{ eventText }}
             <br>

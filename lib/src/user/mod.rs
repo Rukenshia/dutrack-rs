@@ -108,6 +108,26 @@ impl User {
             Err(e) => return Err(format!("db: {}", e)),
         }
     }
+
+    pub fn finish_setup(&mut self) -> Result<(), String> {
+        use db::schema::users::dsl::*;
+
+        if self.finished_setup {
+            return Ok(());
+        }
+
+        self.finished_setup = true;
+
+        let con = Database::get().pg.lock().unwrap();
+
+        match diesel::update(users.find(&self.id))
+                  .set(finished_setup.eq(true))
+                  .returning(id)
+                  .get_result::<Uuid>(&*con) {
+            Ok(_) => Ok(()),
+            Err(e) => Err(format!("db {}", e)),
+        }
+    }
 }
 
 impl<'a, 'r> FromRequest<'a, 'r> for User {

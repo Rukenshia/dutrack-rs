@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use rocket::Rocket;
-use rocket::response::Redirect;
+use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 
 use lib::db::models::User;
@@ -22,6 +22,14 @@ fn setup_redir() -> Redirect {
     Redirect::to("/")
 }
 
+#[get("/finish")]
+fn finish_setup(mut user: User) -> Flash<Redirect> {
+    match user.finish_setup() {
+        Ok(_) => Flash::success(Redirect::to("/"), ""),
+        Err(e) => Flash::error(Redirect::to("/500"), e),
+    }
+}
+
 pub fn mount(rocket: Rocket) -> Rocket {
-    rocket.mount("/setup", routes![setup, setup_redir])
+    rocket.mount("/setup", routes![setup, setup_redir, finish_setup])
 }

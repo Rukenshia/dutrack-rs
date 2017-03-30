@@ -20,7 +20,7 @@ Vue.component('today', {
           </article>
         </div>
         <div class="column is-offset-1 is-9">
-          <day-summary :now="now" :date="date" :stamps="workday.stamps"></day-summary>
+          <day-summary :now="now" :date="date" :stamps="parsed.connecting"></day-summary>
 
           <template v-if="parsed !== null">
           <template v-for="event in parsed.events">
@@ -105,6 +105,8 @@ Vue.component('today', {
     async start() {
       try {
         this.workday.stamps.push(JSON.parse(await http.get(`/api/v1/fence/${window.DUTRACK.fence}/enter`)));
+        this.parsed = window.parseStamps(this.workday.stamps);
+        this.parsed.events.reverse();
       } catch(e) {
         return;
       }
@@ -112,6 +114,8 @@ Vue.component('today', {
     async stop() {
       try {
         this.workday.stamps.push(JSON.parse(await http.get(`/api/v1/fence/${window.DUTRACK.fence}/exit`)));
+        this.parsed = window.parseStamps(this.workday.stamps);
+        this.parsed.events.reverse();
       } catch(e) {
         return;
       }

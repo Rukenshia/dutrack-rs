@@ -54,6 +54,8 @@ Vue.component('day-summary', {
         if (this.daysAgo === 0) {
           dur.add(this.now.diff(enter));
         }
+      } else {
+        this.notCheckedOut = false;
       }
 
       return {

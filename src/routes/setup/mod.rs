@@ -1,20 +1,26 @@
-use std::collections::HashMap;
-
 use rocket::Rocket;
 use rocket::response::{Flash, Redirect};
 use rocket_contrib::Template;
 
 use lib::db::models::User;
+use user::FrontendUser;
+
+#[derive(Serialize)]
+struct SetupContext {
+    user: FrontendUser,
+    enter_uri: String,
+    exit_uri: String,
+}
 
 #[get("/")]
 fn setup(user: User) -> Template {
-    let mut data: HashMap<String, String> = HashMap::new();
-    data.insert("enter_uri".into(),
-                format!("http://time.in.fkn.space/api/v1/fence/{}/enter",
-                        user.fence_key));
-    data.insert("exit_uri".into(),
-                format!("http://time.in.fkn.space/api/v1/fence/{}/exit",
-                        user.fence_key));
+    let data = SetupContext {
+        user: FrontendUser::from_user(&user),
+        enter_uri: format!("http://time.in.fkn.space/api/v1/fence/{}/enter",
+                           user.fence_key),
+        exit_uri: format!("http://time.in.fkn.space/api/v1/fence/{}/exit",
+                          user.fence_key),
+    };
     Template::render("setup/index", &data)
 }
 

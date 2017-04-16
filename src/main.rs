@@ -21,6 +21,7 @@ use dotenv::dotenv;
 mod routes;
 mod user;
 mod form_models;
+mod context;
 
 fn main() {
     dotenv().ok();

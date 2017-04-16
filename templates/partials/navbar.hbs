@@ -17,9 +17,14 @@
     <!-- This "nav-menu" is hidden on mobile -->
     <!-- Add the modifier "is-active" to display it on mobile -->
     <div id="nav-menu" class="nav-right nav-menu">
-      <a class="nav-item">
+      <a href="/" class="nav-item">
         Home
       </a>
+      {{#with user}}
+      <a href="/logout" class="nav-item">
+        Logout
+      </a>
+      {{/with}}
     </div>
   </div>
 </nav>

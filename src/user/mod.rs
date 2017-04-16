@@ -4,6 +4,23 @@ use lib::log::debug;
 
 use rocket::http::{Cookie, Cookies};
 
+
+#[derive(Serialize)]
+pub struct FrontendUser {
+    email: String,
+    fence: String,
+}
+
+impl FrontendUser {
+    pub fn from_user(user: &User) -> Self {
+        FrontendUser {
+            email: user.email.clone(),
+            fence: format!("{}", user.fence_key),
+        }
+    }
+}
+
+
 pub struct UserController {}
 
 impl UserController {

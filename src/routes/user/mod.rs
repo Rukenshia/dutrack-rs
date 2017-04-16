@@ -8,26 +8,8 @@ mod registration;
 
 use self::login::*;
 use self::registration::*;
-
-#[derive(Serialize)]
-struct IndexContext {
-    user: FrontendUser,
-}
-
-#[derive(Serialize)]
-struct FrontendUser {
-    email: String,
-    fence: String,
-}
-
-impl FrontendUser {
-    pub fn from_user(user: &User) -> Self {
-        FrontendUser {
-            email: user.email.clone(),
-            fence: format!("{}", user.fence_key),
-        }
-    }
-}
+use user::FrontendUser;
+use context::Context;
 
 #[get("/")]
 #[allow(unused)]
@@ -36,10 +18,7 @@ pub fn index(user: User) -> Result<Template, Flash<Redirect>> {
         return Err(Flash::error(Redirect::to("/setup"), ""));
     }
 
-
-    let ctx = IndexContext { user: FrontendUser::from_user(&user) };
-
-    Ok(Template::render("index", &ctx))
+    Ok(Template::render("index", &Context::new(Some(user))))
 }
 
 pub fn mount(rocket: Rocket) -> Rocket {
